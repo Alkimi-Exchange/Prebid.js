@@ -4,7 +4,7 @@ import { ajax } from '../src/ajax.js';
 import { VIDEO } from '../src/mediaTypes.js';
 
 const BIDDER_CODE = 'alkimi';
-export const ENDPOINT = 'https://exchange-dev.alkimi.asteriosoft.com/bid?prebid=true'
+export const ENDPOINT = 'http://localhost:8055/bid?prebid=true'
 
 export const spec = {
   code: BIDDER_CODE,
@@ -16,11 +16,12 @@ export const spec = {
 
   buildRequests: function (validBidRequests, bidderRequest) {
     let bids = [];
+    let bidIds = [];
     validBidRequests.forEach(bidRequest => {
       let sizes = prepareSizes(bidRequest.sizes)
 
       bids.push({
-        bidId: bidRequest.bidId,
+        // bidId: bidRequest.bidId,
         token: bidRequest.params.token,
         pos: bidRequest.params.pos,
         bidFloor: bidRequest.params.bidFloor,
@@ -28,11 +29,13 @@ export const spec = {
         height: sizes[0].height,
         impMediaType: getFormatType(bidRequest)
       })
+      bidIds.push(bidRequest.bidId)
     })
 
     let payload = {
       requestId: bidderRequest.bidderRequestId,
       bids,
+      bidIds,
       referer: bidderRequest.refererInfo.referer
     }
 

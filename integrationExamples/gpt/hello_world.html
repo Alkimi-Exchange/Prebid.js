@@ -8,29 +8,88 @@
 -->
 
 <html>
+
 <head>
     <script async src="../../build/dev/prebid.js"></script>
     <script async src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+
+    <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
+
     <script>
         var FAILSAFE_TIMEOUT = 3300;
         var PREBID_TIMEOUT = 1000;
 
-        var adUnits = [{
+        var bannerAdUnit1 = {
             code: 'div-gpt-ad-1460505748561-0',
             mediaTypes: {
                 banner: {
-                    sizes: [[300, 250], [300,600]],
+                    sizes: [[300, 250]],
                 }
             },
-            // Replace this object to test a new Adapter!
             bids: [{
-                bidder: 'appnexus',
+                bidder: 'alkimi',
                 params: {
-                    placementId: 13144370
+                    bidFloor: 100,
+                    // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
+                    token: '7d8aac74-ad7c-4015-9e03-b25beb7b257d', // localhost
+                    test: () => console.log('test')
+                }
+            }, {
+                bidder: 'qwarry',
+                params: {
+                    bidFloor: 100,
+                    // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
+                    zonetoken: '7d8aac74-ad7c-4015-9e03-b25beb7b257d', // localhost
+                }
+            }],
+            gdprConsent: {
+                consentString: "BOJ/P2HOJ/P2HABABMAAAAAZ+A==",
+                gdprApplies: true
+            }
+
+        };
+
+        // var bannerAdUnit2 = {
+        //     code: 'div-gpt-ad-1460505748561-1',
+        //     mediaTypes: {
+        //         banner: {
+        //             sizes: [[300, 250]],
+        //         }
+        //     },
+        //     bids: [{
+        //         bidder: 'alkimi',
+        //         params: {
+        //             bidFloor: 100,
+        //             // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
+        //             token: '7d8aac74-ad7c-4015-9e03-b25beb7b257d', // localhost
+        //         }
+        //     }]
+        // };
+
+        var videoAdUnit = {
+            code: 'vid1',
+            mediaTypes: {
+                video: {
+                    playerSize: [[300, 250]],
+                    mimes: ["video/mp4"],
+                    protocols: [1, 2, 3, 4, 5]
+                }
+            },
+            bids: [{
+                bidder: 'alkimi',
+                params: {
+                    bidFloor: 0.4,
+                    token: '7d8aac74-ad7c-4015-9e03-b25beb7b257d',
+                }
+            },
+            {
+                bidder: 'alkimi2',
+                params: {
+                    bidFloor: 0.4,
+                    token: 'a6b042a5-2d68-4110-a051-77fbaf002035',
                 }
             }]
-
-        }];
+        };
 
         var pbjs = pbjs || {};
         pbjs.que = pbjs.que || [];
@@ -40,30 +99,267 @@
     <script>
         var googletag = googletag || {};
         googletag.cmd = googletag.cmd || [];
-        googletag.cmd.push(function() {
+        googletag.cmd.push(function () {
             googletag.pubads().disableInitialLoad();
         });
 
-        pbjs.que.push(function() {
-            pbjs.addAdUnits(adUnits);
+        //
+
+        // adUnits.forEach(adUnit => {
+        //     // get the adunit's mediaTypes, defaulting to banner if mediaTypes isn't present
+        //     const adUnitMediaTypes = Object.keys(adUnit.mediaTypes || { 'banner': 'banner' });
+
+        //     // get the bidder's mediaTypes
+        //     const allBidders = adUnit.bids.map(bid => bid.bidder);
+        //     const bidderRegistry = adapterManager.bidderRegistry;
+
+        //     const bidders = (s2sBidders) ? allBidders.filter(bidder => !includes(s2sBidders, bidder)) : allBidders;
+
+        //     adUnit.transactionId = generateUUID();
+
+        //     bidders.forEach(bidder => {
+        //         const adapter = bidderRegistry[bidder];
+        //         const spec = adapter && adapter.getSpec && adapter.getSpec();
+        //         // banner is default if not specified in spec
+        //         const bidderMediaTypes = (spec && spec.supportedMediaTypes) || ['banner'];
+
+        //         // check if the bidder's mediaTypes are not in the adUnit's mediaTypes
+        //         const bidderEligible = adUnitMediaTypes.some(type => includes(bidderMediaTypes, type));
+        //         if (!bidderEligible) {
+        //             // drop the bidder from the ad unit if it's not compatible
+        //             logWarn(unsupportedBidderMessage(adUnit, bidder));
+        //             adUnit.bids = adUnit.bids.filter(bid => bid.bidder !== bidder);
+        //         } else {
+        //             adunitCounter.incrementBidderRequestsCounter(adUnit.code, bidder);
+        //         }
+        //     });
+        //     adunitCounter.incrementRequestsCounter(adUnit.code);
+        // });
+
+
+
+
+        let adUnits = checkAdUnitSetup([bannerAdUnit1])
+        console.log(JSON.stringify(adUnits))
+
+        pbjs.que.push(function () {
+            pbjs.addAdUnits(bannerAdUnit1);
+            // pbjs.addAdUnits(bannerAdUnit2);
+            // pbjs.addAdUnits(videoAdUnit);
+
+
+
+            pbjs.setConfig({
+                cache: {
+                    url: "https://prebid.adnxs.com/pbc/v1/cache"
+                },
+                // floors: {},
+                ortb2: {
+                    site: {
+                        page: "https://example2.com/index.html"
+                    },
+                    device: {
+                        "ua": "userAgent",
+                        "ip": "193.168.244.1"
+                    },
+                    regs: {
+                        ext: {
+                            gdpr: 0
+                        }
+                    }
+                },
+                // // debug: true,
+                // s2sConfig: {
+                //     accountId: '1',
+                //     bidders: ['alkimi'],
+                //     adapter: 'prebidServer',
+                //     enabled: true,
+                //     endpoint: 'http://localhost:8080/openrtb2/auction',
+                //     syncEndpoint: 'http://localhost:8080/cookie_sync',
+                //     timeout: 50000,
+                //     // syncUrlModifier: {
+                //     //     'openx': function (type, url, bidder) {
+                //     //         const publisherId = '00000123231231'
+                //     //         url += &ri=${publisherId};
+                //     //         return url
+                //     //     }
+                //     // },
+                //     extPrebid: {
+                //         // cache: {
+                //         //     vastxml: { returnCreative: true }
+                //         // },
+                //         targeting: {
+                //             pricegranularity: { "ranges": [{ "max": 40.00, "increment": 1.00 }] }
+                //         }
+                //     }
+                // }
+            });
+
+            pbjs.onEvent('beforeBidderHttp', (object1) => {
+
+                // fetch('http://localhost:8181/bid/aaa', {
+                //     method: 'POST', body: JSON.stringify(payload), headers: {
+                //         'Content-Type': 'application/json',
+                //         'Accept': 'application/json'
+                //     }
+                // }).then(response => {
+                //     if (response.status !== 200) {
+                //         alert('Incorrect request!')
+                //     } else {
+
+                //     }
+                // })
+            })
+
             pbjs.requestBids({
                 bidsBackHandler: sendAdserverRequest,
                 timeout: PREBID_TIMEOUT
             });
         });
 
+        function clone(obj) {
+            var result = Array.isArray(obj) ? [] : {};
+            for (var key in obj) {
+                // include prototype properties
+                var value = obj[key];
+                if (value && typeof value == 'object') {
+                    result[key] = clone(value);
+                } else {
+                    result[key] = value;
+                }
+            }
+            return result;
+        }
+
+        function dlv(obj, key, def, p, undef) {
+            key = key.split ? key.split('.') : key;
+            for (p = 0; p < key.length; p++) {
+                obj = obj ? obj[key[p]] : undef;
+            }
+            return obj === undef ? def : obj;
+        }
+
+        function prepareSizes(sizes) {
+            return sizes && sizes.map(size => ({ width: size[0], height: size[1] }));
+        }
+
+        function getFormatType(bidRequest) {
+            if (dlv(bidRequest, 'mediaTypes.banner')) return 'Banner'
+            if (dlv(bidRequest, 'mediaTypes.video')) return 'Video'
+            if (dlv(bidRequest, 'mediaTypes.audio')) return 'Audio'
+        }
+
+        function buildPaiload(validBidRequests) {
+            let bids = [];
+            validBidRequests.forEach(bidRequest => {
+                let sizes = prepareSizes(bidRequest.sizes)
+
+                bids.push({
+                    bidId: bidRequest.bidId,
+                    token: bidRequest.params.token,
+                    pos: bidRequest.params.pos,
+                    bidFloor: bidRequest.params.bidFloor,
+                    width: sizes[0].width,
+                    height: sizes[0].height,
+                    impMediaType: getFormatType(bidRequest)
+                })
+            })
+
+            return {
+                bids
+            }
+        }
+
+        function checkAdUnitSetup(adUnits) {
+            const validatedAdUnits = [];
+
+            adUnits.forEach(adUnit => {
+                const mediaTypes = adUnit.mediaTypes;
+                const bids = adUnit.bids;
+                let validatedBanner, validatedVideo, validatedNative;
+
+                bids.forEach(bid => {
+                    if (bid.bidder == 'alkimi') {
+                        const validatedAdUnit = { params: {} }
+                        validatedAdUnit.params.token = bid.params.token
+                        validatedAdUnit.params.pos = bid.params.pos
+                        validatedAdUnit.params.bidFloor = bid.params.bidFloor
+
+                        validatedAdUnits.push(validatedAdUnit);
+                    }
+                })
+            });
+
+            return validatedAdUnits;
+        };
+
+        function validateBannerMediaType(adUnit) {
+            const validatedAdUnit = clone(adUnit);
+            const banner = validatedAdUnit.mediaTypes.banner;
+            const bannerSizes = validateSizes(banner.sizes);
+            if (bannerSizes.length > 0) {
+                banner.sizes = bannerSizes;
+                // Deprecation Warning: This property will be deprecated in next release in favor of adUnit.mediaTypes.banner.sizes
+                validatedAdUnit.sizes = bannerSizes;
+            } else {
+                logError('Detected a mediaTypes.banner object without a proper sizes field.  Please ensure the sizes are listed like: [[300, 250], ...].  Removing invalid mediaTypes.banner object from request.');
+                delete validatedAdUnit.mediaTypes.banner
+            }
+            return validatedAdUnit;
+        }
+
+        function validateSizes(sizes, targLength) {
+            let cleanSizes = [];
+            if (isArray(sizes) && ((targLength) ? sizes.length === targLength : sizes.length > 0)) {
+                // check if an array of arrays or array of numbers
+                if (sizes.every(sz => isArrayOfNums(sz, 2))) {
+                    cleanSizes = sizes;
+                } else if (isArrayOfNums(sizes, 2)) {
+                    cleanSizes.push(sizes);
+                }
+            }
+            return cleanSizes;
+        }
+
+        function isArray(object) {
+            return isA(object, 'Array');
+        }
+
+        function isA(object, _t) {
+            return toString.call(object) === '[object ' + _t + ']';
+        }
+
+        function isArrayOfNums(val, size) {
+            return (isArray(val)) && ((size) ? val.length === size : true) && (val.every(v => isInteger(v)));
+        }
+
+        function isInteger(value) {
+            if (Number.isInteger) {
+                return Number.isInteger(value);
+            } else {
+                return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+            }
+        }
+
         function sendAdserverRequest() {
             if (pbjs.adserverRequestSent) return;
             pbjs.adserverRequestSent = true;
-            googletag.cmd.push(function() {
-                pbjs.que.push(function() {
+            googletag.cmd.push(function () {
+                pbjs.que.push(function () {
                     pbjs.setTargetingForGPTAsync();
                     googletag.pubads().refresh();
                 });
             });
+
+            var highestCpmBids = pbjs.getHighestCpmBids('vid1');
+            var videoUrl = pbjs.adServers.dfp.buildVideoUrl({
+                adUnit: videoAdUnit,
+                url: 'https://prebid.adnxs.com/pbc/v1/cache?uuid=' + highestCpmBids[0].videoCacheKey
+            });
+            invokeVideoPlayer(videoUrl);
         }
 
-        setTimeout(function() {
+        setTimeout(function () {
             sendAdserverRequest();
         }, FAILSAFE_TIMEOUT);
 
@@ -71,21 +367,127 @@
 
     <script>
         googletag.cmd.push(function () {
-            googletag.defineSlot('/19968336/header-bid-tag-0', [[300, 250], [300, 600]], 'div-gpt-ad-1460505748561-0').addService(googletag.pubads());
+            googletag.defineSlot('/19968336/header-bid-tag-0', [[300, 250]], 'div-gpt-ad-1460505748561-0').addService(googletag.pubads());
+            // googletag.defineSlot('/19968336/header-bid-tag-1', [[300, 250]], 'div-gpt-ad-1460505748561-1').addService(googletag.pubads());
 
             googletag.pubads().enableSingleRequest();
             googletag.enableServices();
         });
     </script>
+
+
+    <script>
+
+        var page_load_time;
+
+        page_load_time = new Date().getTime() - performance.timing.navigationStart;
+        console.log(page_load_time + "ms -- Player loading!");
+
+
+
+        page_load_time = new Date().getTime() - performance.timing.navigationStart;
+        console.log(page_load_time + "ms -- Player loaded!");
+
+        function invokeVideoPlayer(url) {
+
+            console.log('vast url: ' + url)
+
+
+
+            var myFP;
+            var vastLoaded;
+
+            var configuration = {
+                "onBeforeXMLHttpRequestOpen": (request) => {
+                    request.withCredentials = false
+                    return request;
+                },
+                "onBeforeXMLHttpRequest": (request) => {
+                    request.withCredentials = false
+                    return request;
+                },
+                "layoutControls": {
+                    "loop": false,
+                    "controlBar": {
+                        "autoHideTimeout": 3,
+                        "animated": true,
+                        "autoHide": true
+                    },
+                    "htmlOnPauseBlock": {
+                        "html": null,
+                        "height": null,
+                        "width": null
+                    },
+                    "autoPlay": false,
+                    "mute": true,
+                    "allowTheatre": false,
+                    "playPauseAnimation": false,
+                    "playbackRateEnabled": false,
+                    "allowDownload": false,
+                    "playButtonShowing": false,
+                    "fillToContainer": false,
+                    "posterImage": ""
+                },
+                "vastOptions": {
+                    "allowVPAID": true,
+                    "adList": [
+                        {
+                            roll: 'preRoll',
+                            vastTag: url
+                        }
+                    ],
+                    "adCTAText": false,
+                    "adCTATextPosition": "",
+                    "vastAdvanced": {
+                        "vastLoadedCallback": () => {
+                            vastLoaded = true;
+                        },
+                        "noVastVideoCallback": () => {
+                            vastLoaded = false;
+                        },
+                        "vastVideoSkippedCallback": () => { },
+                        "vastVideoEndedCallback": () => {
+                            if (vastLoaded) {
+                                myFP = fluidPlayer('vid1', configuration);
+                                myFP.play();
+                            }
+                        }
+                    }
+                }
+            }
+
+            myFP = fluidPlayer('vid1', configuration);
+            myFP.play();
+
+        }
+
+    </script>
+
 </head>
 
 <body>
-<h2>Prebid.js Test</h2>
-<h5>Div-1</h5>
-<div id='div-gpt-ad-1460505748561-0'>
-    <script type='text/javascript'>
-        googletag.cmd.push(function() { googletag.display('div-gpt-ad-1460505748561-0'); });
-    </script>
-</div>
+    <h2>Alkimi test via prebid.js</h2>
+    <h5>Banner ad</h5>
+    <div id='div-gpt-ad-1460505748561-0'>
+        <script type='text/javascript'>
+            googletag.cmd.push(function () { googletag.display('div-gpt-ad-1460505748561-0'); });
+        </script>
+    </div>
+
+    <!-- <h5>Div-2 banner</h5>
+    <div id='div-gpt-ad-1460505748561-1'>
+        <script type='text/javascript'>
+            googletag.cmd.push(function () { googletag.display('div-gpt-ad-1460505748561-1'); });
+        </script>
+    </div> -->
+
+    <h5>Video ad</h5>
+
+    <video id="vid1" width='640' height='480' muted>
+        <source src="https://cdn.visualidx.com/media/video/one_second_blank.m4v" type='video/mp4' />
+        <!-- <source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' /> -->
+    </video>
+
 </body>
+
 </html>

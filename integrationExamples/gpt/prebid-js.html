@@ -1,0 +1,186 @@
+<html>
+
+<head>
+    <script async src="../../build/dist/prebid.js"></script>
+    <script async src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+
+    <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
+
+    <script>
+        var FAILSAFE_TIMEOUT = 3300;
+        var PREBID_TIMEOUT = 1000;
+
+        var bannerAdUnit1 = {
+            code: 'div-gpt-ad-1460505748561-0',
+            mediaTypes: {
+                banner: {
+                    sizes: [[300, 250]],
+                }
+            },
+            bids: [{
+                bidder: 'alkimi',
+                params: {
+                    bidFloor: 100,
+                    token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
+                }
+            }]
+        };
+
+        var videoAdUnit = {
+            code: 'vid1',
+            mediaTypes: {
+                video: {
+                    playerSize: [[300, 250]],
+                    mimes: ["video/mp4"]
+                }
+            },
+            bids: [{
+                bidder: 'alkimi',
+                params: {
+                    bidFloor: 0.4,
+                    token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
+                }
+            }]
+
+        };
+
+        var pbjs = pbjs || {};
+        pbjs.que = pbjs.que || [];
+
+    </script>
+
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+        googletag.cmd.push(function () {
+            googletag.pubads().disableInitialLoad();
+        });
+
+        pbjs.que.push(function () {
+            pbjs.addAdUnits(bannerAdUnit1);
+            pbjs.addAdUnits(videoAdUnit);
+
+            pbjs.setConfig({
+                cache: {
+                    url: "https://prebid.adnxs.com/pbc/v1/cache"
+                }
+            });
+
+            pbjs.requestBids({
+                bidsBackHandler: sendAdserverRequest,
+                timeout: PREBID_TIMEOUT
+            });
+        });
+
+        function sendAdserverRequest() {
+            if (pbjs.adserverRequestSent) return;
+            pbjs.adserverRequestSent = true;
+            googletag.cmd.push(function () {
+                pbjs.que.push(function () {
+                    pbjs.setTargetingForGPTAsync();
+                    googletag.pubads().refresh();
+                });
+            });
+
+            var highestCpmBids = pbjs.getHighestCpmBids('vid1');
+            var videoUrl = pbjs.adServers.dfp.buildVideoUrl({
+                adUnit: videoAdUnit,
+                url: 'https://prebid.adnxs.com/pbc/v1/cache?uuid=' + highestCpmBids[0].videoCacheKey
+            });
+            invokeVideoPlayer(videoUrl);
+        }
+
+        setTimeout(function () {
+            sendAdserverRequest();
+        }, FAILSAFE_TIMEOUT);
+
+    </script>
+
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot('/19968336/header-bid-tag-0', [[300, 250]], 'div-gpt-ad-1460505748561-0').addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+
+
+    <script>
+        var page_load_time;
+
+        page_load_time = new Date().getTime() - performance.timing.navigationStart;
+        console.log(page_load_time + "ms -- Player loading!");
+
+        page_load_time = new Date().getTime() - performance.timing.navigationStart;
+        console.log(page_load_time + "ms -- Player loaded!");
+
+        function invokeVideoPlayer(url) {
+            console.log('vast url: ' + url)
+            var myFP;
+            var configuration = {
+                "onBeforeXMLHttpRequestOpen": (request) => {
+                    request.withCredentials = false
+                    return request;
+                },
+                "onBeforeXMLHttpRequest": (request) => {
+                    request.withCredentials = false
+                    return request;
+                },
+                "layoutControls": {
+                    "loop": false,
+                    "controlBar": {
+                        "autoHideTimeout": 3,
+                        "animated": true,
+                        "autoHide": true
+                    },
+                    "htmlOnPauseBlock": {
+                        "html": null,
+                        "height": null,
+                        "width": null
+                    },
+                    "autoPlay": false,
+                    "mute": true,
+                    "allowTheatre": false,
+                    "playPauseAnimation": false,
+                    "playbackRateEnabled": false,
+                    "allowDownload": false,
+                    "playButtonShowing": false,
+                    "fillToContainer": false,
+                    "posterImage": ""
+                },
+                "vastOptions": {
+                    "allowVPAID": true,
+                    "adList": [
+                        {
+                            roll: 'preRoll',
+                            vastTag: url
+                        }
+                    ],
+                    "adCTAText": false,
+                    "adCTATextPosition": ""
+                }
+            }
+
+            myFP = fluidPlayer('vid1', configuration);
+            myFP.play();
+        }
+    </script>
+</head>
+
+<body>
+    <h2>Alkimi test via prebid.js</h2>
+
+    <h5>Banner ad</h5>
+    <div id='div-gpt-ad-1460505748561-0'>
+        <script type='text/javascript'>
+            googletag.cmd.push(function () { googletag.display('div-gpt-ad-1460505748561-0'); });
+        </script>
+    </div>
+
+    <h5>Video ad</h5>
+    <video id="vid1" width='640' height='480' muted>
+        <source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' />
+    </video>
+</body>
+
+</html>

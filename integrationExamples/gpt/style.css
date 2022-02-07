@@ -1,0 +1,48 @@
+#bidders-list,
+.config-link {
+    margin-top: 3rem;
+}
+
+.bidders-list-item {
+    display: flex;
+    margin-top: 1rem;
+    align-items: center;
+}
+.bidders-list-item > div {
+    margin-right: 1rem;
+}
+
+.bidders-list-item-form {
+    display: flex;
+}
+
+.configuration-name {
+   margin-right: 1rem;
+}
+
+.configuration-name > div,
+.configuration-form > input {
+    height: 1.4rem;
+}
+
+.configuration-form {
+    display: grid;
+    width: 600px;
+}
+
+.apply-button {
+    cursor: pointer;
+}
+
+.config-link {
+    display: block;
+}
+
+#add-new {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+}
+#add-new > div {
+    margin-right: 1rem;
+}

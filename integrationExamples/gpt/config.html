@@ -1,0 +1,129 @@
+<!--
+  This page calls a single bidder for a single ad slot. It can be considered a "hello world" example for using
+  Prebid with the Google Publisher Tag.
+  It also makes a good test page for new adapter PR submissions. Simply set your server's Bid Params object in the
+  bids array inside the adUnits, and it will use your adapter to load an ad.
+  NOTE that many ad servers won't send back an ad if the URL is localhost... so you might need to
+  set an alias in your /etc/hosts file so that you can load this page from a different domain.
+-->
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body id="body">
+    <div id="bidders-list">DSP configuration:</div>
+
+    <script>
+        var TEST_BIDDER_URL = 'http://localhost:8181/support/config'
+
+        const createNew = () => {
+            let add = document.getElementById('add-new');
+            if (add) return
+
+            let body = document.getElementById('body');
+            let div = document.createElement('div')
+            div.setAttribute('id', 'add-new')
+            body.appendChild(div)
+            div.innerHTML = `
+                                <div class="bidders-list-item-form">
+                                    <div class="configuration-name">
+                                        <div>DSP ID</div>
+                                        <div>Banner link</div>
+                                        <div>Banner price</div>
+                                        <div>Video link</div>
+                                        <div>Video price</div>
+                                    </div>
+                                    <form id="config-form-new" name="Create new DSP config" class="configuration-form">
+                                        <input id="dspId" name="dspId" />
+                                        <input id="bannerLink" name="bannerLink" />
+                                        <input id="bannerPrice" name="bannerPrice" "/>
+                                        <input id="videoLink" name="videoLink" />
+                                        <input id="videoPrice" name="videoPrice" />
+                                    </form>
+                                </div>
+                                <div type="submit" class="apply-button" onclick="sendConfig(undefined)">Apply</div>
+                            `
+        }
+
+        const sendConfig = (dspID) => {
+            let formData
+            if (dspID) {
+                const form = document.getElementById('config-form-' + dspID)
+                formData = new FormData(form)
+                formData.append('dspId', dspID);
+            } else {
+                const form = document.getElementById('config-form-new')
+                formData = new FormData(form)
+            }
+
+            fetch(TEST_BIDDER_URL, {
+                method: 'POST', body: JSON.stringify(Object.fromEntries(formData)), headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.status !== 200) {
+                    alert('Incorrect request!')
+                }
+            })
+        }
+
+        const deleteConfig = (dspID) => {
+            fetch(TEST_BIDDER_URL + '/' + dspID, { method: 'DELETE' }).then(response => {
+                if (response.status !== 200) {
+                    alert('Incorrect request!')
+                }
+            })
+        }
+
+        const getBiddersInfo = () => {
+            let biddersList = document.getElementById('bidders-list');
+
+            fetch(TEST_BIDDER_URL).then(response => {
+                if (response.status === 200) {
+                    response.json().then(json => {
+                        Object.keys(json).map(dspId => {
+                            let divOuter = document.createElement('div')
+                            divOuter.setAttribute("id", dspId)
+                            biddersList.appendChild(divOuter)
+
+                            const banner = Object.entries(json[dspId]['Banner'])[0]
+                            const video = Object.entries(json[dspId]['Video'])[0]
+
+                            let div = document.getElementById(dspId);
+                            div.className = 'bidders-list-item'
+                            div.innerHTML = `
+                                            <div>DSP ID ${dspId}</div>
+                                            <div class="bidders-list-item-form">
+                                                <div class="configuration-name">
+                                                    <div>Banner link</div>
+                                                    <div>Banner price</div>
+                                                    <div>Video link</div>
+                                                    <div>Video price</div>
+                                                </div>
+                                                <form id="config-form-${dspId}" name="DSP ID ${dspId}" class="configuration-form">
+                                                    <input id="bannerLink" name="bannerLink" value="${banner[0]}"/>
+                                                    <input id="bannerPrice" name="bannerPrice" value="${banner[1]}"/>
+                                                    <input id="videoLink" name="videoLink" value="${video[0]}"/>
+                                                    <input id="videoPrice" name="videoPrice" value="${video[1]}"/>
+                                                </form>
+                                            </div>
+                                            <div type="submit" class="apply-button" onclick="sendConfig(${dspId})">Apply</div>
+                                            <div class="apply-button" onclick="deleteConfig(${dspId})">Delete</div>
+                                        `
+                        })
+                    })
+                }
+            })
+        }
+        getBiddersInfo()
+    </script>
+
+    <div class="apply-button" onclick="createNew()">Add new configuration</div>
+
+</body>
+
+</html>
