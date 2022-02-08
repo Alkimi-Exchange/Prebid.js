@@ -104,10 +104,11 @@
             googletag.pubads().disableInitialLoad();
         });
 
+        const randomUUID = generateUUID()
         const bids = checkAdUnitSetup([bannerAdUnit1, videoAdUnit])
 
         fetch('http://localhost:8282/bid/sign', {
-            method: 'POST', body: JSON.stringify({ bids }), headers: {
+            method: 'POST', body: JSON.stringify({ bids, randomUUID }), headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             }
@@ -123,7 +124,8 @@
 
                         pbjs.setConfig({
                             alkimi: {
-                                signature: json.signature
+                                signature: json.signature,
+                                randomUUID
                             },
                             cache: {
                                 url: "https://prebid.adnxs.com/pbc/v1/cache"
