@@ -14,6 +14,7 @@
     <script async src="https://www.googletagservices.com/tag/js/gpt.js"></script>
 
     <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
+    <script src="./sign_utils.js"></script>
 
     <script>
         var FAILSAFE_TIMEOUT = 3300;
@@ -103,243 +104,80 @@
             googletag.pubads().disableInitialLoad();
         });
 
-        //
+        const bids = checkAdUnitSetup([bannerAdUnit1, videoAdUnit])
 
-        // adUnits.forEach(adUnit => {
-        //     // get the adunit's mediaTypes, defaulting to banner if mediaTypes isn't present
-        //     const adUnitMediaTypes = Object.keys(adUnit.mediaTypes || { 'banner': 'banner' });
-
-        //     // get the bidder's mediaTypes
-        //     const allBidders = adUnit.bids.map(bid => bid.bidder);
-        //     const bidderRegistry = adapterManager.bidderRegistry;
-
-        //     const bidders = (s2sBidders) ? allBidders.filter(bidder => !includes(s2sBidders, bidder)) : allBidders;
-
-        //     adUnit.transactionId = generateUUID();
-
-        //     bidders.forEach(bidder => {
-        //         const adapter = bidderRegistry[bidder];
-        //         const spec = adapter && adapter.getSpec && adapter.getSpec();
-        //         // banner is default if not specified in spec
-        //         const bidderMediaTypes = (spec && spec.supportedMediaTypes) || ['banner'];
-
-        //         // check if the bidder's mediaTypes are not in the adUnit's mediaTypes
-        //         const bidderEligible = adUnitMediaTypes.some(type => includes(bidderMediaTypes, type));
-        //         if (!bidderEligible) {
-        //             // drop the bidder from the ad unit if it's not compatible
-        //             logWarn(unsupportedBidderMessage(adUnit, bidder));
-        //             adUnit.bids = adUnit.bids.filter(bid => bid.bidder !== bidder);
-        //         } else {
-        //             adunitCounter.incrementBidderRequestsCounter(adUnit.code, bidder);
-        //         }
-        //     });
-        //     adunitCounter.incrementRequestsCounter(adUnit.code);
-        // });
-
-
-
-
-        let adUnits = checkAdUnitSetup([bannerAdUnit1])
-        console.log(JSON.stringify(adUnits))
-
-        pbjs.que.push(function () {
-            pbjs.addAdUnits(bannerAdUnit1);
-            // pbjs.addAdUnits(bannerAdUnit2);
-            // pbjs.addAdUnits(videoAdUnit);
-
-
-
-            pbjs.setConfig({
-                cache: {
-                    url: "https://prebid.adnxs.com/pbc/v1/cache"
-                },
-                // floors: {},
-                ortb2: {
-                    site: {
-                        page: "https://example2.com/index.html"
-                    },
-                    device: {
-                        "ua": "userAgent",
-                        "ip": "193.168.244.1"
-                    },
-                    regs: {
-                        ext: {
-                            gdpr: 0
-                        }
-                    }
-                },
-                // // debug: true,
-                // s2sConfig: {
-                //     accountId: '1',
-                //     bidders: ['alkimi'],
-                //     adapter: 'prebidServer',
-                //     enabled: true,
-                //     endpoint: 'http://localhost:8080/openrtb2/auction',
-                //     syncEndpoint: 'http://localhost:8080/cookie_sync',
-                //     timeout: 50000,
-                //     // syncUrlModifier: {
-                //     //     'openx': function (type, url, bidder) {
-                //     //         const publisherId = '00000123231231'
-                //     //         url += &ri=${publisherId};
-                //     //         return url
-                //     //     }
-                //     // },
-                //     extPrebid: {
-                //         // cache: {
-                //         //     vastxml: { returnCreative: true }
-                //         // },
-                //         targeting: {
-                //             pricegranularity: { "ranges": [{ "max": 40.00, "increment": 1.00 }] }
-                //         }
-                //     }
-                // }
-            });
-
-            pbjs.onEvent('beforeBidderHttp', (object1) => {
-
-                // fetch('http://localhost:8181/bid/aaa', {
-                //     method: 'POST', body: JSON.stringify(payload), headers: {
-                //         'Content-Type': 'application/json',
-                //         'Accept': 'application/json'
-                //     }
-                // }).then(response => {
-                //     if (response.status !== 200) {
-                //         alert('Incorrect request!')
-                //     } else {
-
-                //     }
-                // })
-            })
-
-            pbjs.requestBids({
-                bidsBackHandler: sendAdserverRequest,
-                timeout: PREBID_TIMEOUT
-            });
-        });
-
-        function clone(obj) {
-            var result = Array.isArray(obj) ? [] : {};
-            for (var key in obj) {
-                // include prototype properties
-                var value = obj[key];
-                if (value && typeof value == 'object') {
-                    result[key] = clone(value);
-                } else {
-                    result[key] = value;
-                }
+        fetch('http://localhost:8282/bid/sign', {
+            method: 'POST', body: JSON.stringify({ bids }), headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             }
-            return result;
-        }
-
-        function dlv(obj, key, def, p, undef) {
-            key = key.split ? key.split('.') : key;
-            for (p = 0; p < key.length; p++) {
-                obj = obj ? obj[key[p]] : undef;
-            }
-            return obj === undef ? def : obj;
-        }
-
-        function prepareSizes(sizes) {
-            return sizes && sizes.map(size => ({ width: size[0], height: size[1] }));
-        }
-
-        function getFormatType(bidRequest) {
-            if (dlv(bidRequest, 'mediaTypes.banner')) return 'Banner'
-            if (dlv(bidRequest, 'mediaTypes.video')) return 'Video'
-            if (dlv(bidRequest, 'mediaTypes.audio')) return 'Audio'
-        }
-
-        function buildPaiload(validBidRequests) {
-            let bids = [];
-            validBidRequests.forEach(bidRequest => {
-                let sizes = prepareSizes(bidRequest.sizes)
-
-                bids.push({
-                    bidId: bidRequest.bidId,
-                    token: bidRequest.params.token,
-                    pos: bidRequest.params.pos,
-                    bidFloor: bidRequest.params.bidFloor,
-                    width: sizes[0].width,
-                    height: sizes[0].height,
-                    impMediaType: getFormatType(bidRequest)
-                })
-            })
-
-            return {
-                bids
-            }
-        }
-
-        function checkAdUnitSetup(adUnits) {
-            const validatedAdUnits = [];
-
-            adUnits.forEach(adUnit => {
-                const mediaTypes = adUnit.mediaTypes;
-                const bids = adUnit.bids;
-                let validatedBanner, validatedVideo, validatedNative;
-
-                bids.forEach(bid => {
-                    if (bid.bidder == 'alkimi') {
-                        const validatedAdUnit = { params: {} }
-                        validatedAdUnit.params.token = bid.params.token
-                        validatedAdUnit.params.pos = bid.params.pos
-                        validatedAdUnit.params.bidFloor = bid.params.bidFloor
-
-                        validatedAdUnits.push(validatedAdUnit);
-                    }
-                })
-            });
-
-            return validatedAdUnits;
-        };
-
-        function validateBannerMediaType(adUnit) {
-            const validatedAdUnit = clone(adUnit);
-            const banner = validatedAdUnit.mediaTypes.banner;
-            const bannerSizes = validateSizes(banner.sizes);
-            if (bannerSizes.length > 0) {
-                banner.sizes = bannerSizes;
-                // Deprecation Warning: This property will be deprecated in next release in favor of adUnit.mediaTypes.banner.sizes
-                validatedAdUnit.sizes = bannerSizes;
+        }).then(response => {
+            if (response.status !== 200) {
+                alert('Incorrect request!')
             } else {
-                logError('Detected a mediaTypes.banner object without a proper sizes field.  Please ensure the sizes are listed like: [[300, 250], ...].  Removing invalid mediaTypes.banner object from request.');
-                delete validatedAdUnit.mediaTypes.banner
+                response.json().then(json => {
+                    pbjs.que.push(function () {
+                        pbjs.addAdUnits(bannerAdUnit1);
+                        // pbjs.addAdUnits(bannerAdUnit2);
+                        pbjs.addAdUnits(videoAdUnit);
+
+                        pbjs.setConfig({
+                            alkimi: {
+                                signature: json.signature
+                            },
+                            cache: {
+                                url: "https://prebid.adnxs.com/pbc/v1/cache"
+                            },
+                            // floors: {},
+                            ortb2: {
+                                site: {
+                                    page: "https://example2.com/index.html"
+                                },
+                                device: {
+                                    "ua": "userAgent",
+                                    "ip": "193.168.244.1"
+                                },
+                                regs: {
+                                    ext: {
+                                        gdpr: 0
+                                    }
+                                }
+                            },
+                            // // debug: true,
+                            // s2sConfig: {
+                            //     accountId: '1',
+                            //     bidders: ['alkimi'],
+                            //     adapter: 'prebidServer',
+                            //     enabled: true,
+                            //     endpoint: 'http://localhost:8080/openrtb2/auction',
+                            //     syncEndpoint: 'http://localhost:8080/cookie_sync',
+                            //     timeout: 50000,
+                            //     // syncUrlModifier: {
+                            //     //     'openx': function (type, url, bidder) {
+                            //     //         const publisherId = '00000123231231'
+                            //     //         url += &ri=${publisherId};
+                            //     //         return url
+                            //     //     }
+                            //     // },
+                            //     extPrebid: {
+                            //         // cache: {
+                            //         //     vastxml: { returnCreative: true }
+                            //         // },
+                            //         targeting: {
+                            //             pricegranularity: { "ranges": [{ "max": 40.00, "increment": 1.00 }] }
+                            //         }
+                            //     }
+                            // }
+                        });
+
+                        pbjs.requestBids({
+                            bidsBackHandler: sendAdserverRequest,
+                            timeout: PREBID_TIMEOUT
+                        });
+                    });
+                })
             }
-            return validatedAdUnit;
-        }
-
-        function validateSizes(sizes, targLength) {
-            let cleanSizes = [];
-            if (isArray(sizes) && ((targLength) ? sizes.length === targLength : sizes.length > 0)) {
-                // check if an array of arrays or array of numbers
-                if (sizes.every(sz => isArrayOfNums(sz, 2))) {
-                    cleanSizes = sizes;
-                } else if (isArrayOfNums(sizes, 2)) {
-                    cleanSizes.push(sizes);
-                }
-            }
-            return cleanSizes;
-        }
-
-        function isArray(object) {
-            return isA(object, 'Array');
-        }
-
-        function isA(object, _t) {
-            return toString.call(object) === '[object ' + _t + ']';
-        }
-
-        function isArrayOfNums(val, size) {
-            return (isArray(val)) && ((size) ? val.length === size : true) && (val.every(v => isInteger(v)));
-        }
-
-        function isInteger(value) {
-            if (Number.isInteger) {
-                return Number.isInteger(value);
-            } else {
-                return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
-            }
-        }
+        })
 
         function sendAdserverRequest() {
             if (pbjs.adserverRequestSent) return;
