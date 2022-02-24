@@ -16,6 +16,16 @@
     <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
     <script src="./sign_utils.js"></script>
 
+    <!-- <style>
+        #fluid_nonLinear_ID0 {
+            border: 0;
+        }
+
+        #close_button_vid1 {
+            display: none;
+        }
+    </style> -->
+
     <script>
         var FAILSAFE_TIMEOUT = 3300;
         var PREBID_TIMEOUT = 1000;
@@ -79,7 +89,7 @@
             bids: [{
                 bidder: 'alkimi',
                 params: {
-                    bidFloor: 0.4,
+                    bidFloor: 104,
                     token: '7d8aac74-ad7c-4015-9e03-b25beb7b257d',
                 }
             },
@@ -123,10 +133,10 @@
                         pbjs.addAdUnits(videoAdUnit);
 
                         pbjs.setConfig({
-                            alkimi: {
-                                signature: json.signature,
-                                randomUUID
-                            },
+                            // alkimi: {
+                            //     signature: json.signature,
+                            //     randomUUID
+                            // },
                             cache: {
                                 url: "https://prebid.adnxs.com/pbc/v1/cache"
                             },
@@ -145,31 +155,37 @@
                                     }
                                 }
                             },
-                            // // debug: true,
-                            // s2sConfig: {
-                            //     accountId: '1',
-                            //     bidders: ['alkimi'],
-                            //     adapter: 'prebidServer',
-                            //     enabled: true,
-                            //     endpoint: 'http://localhost:8080/openrtb2/auction',
-                            //     syncEndpoint: 'http://localhost:8080/cookie_sync',
-                            //     timeout: 50000,
-                            //     // syncUrlModifier: {
-                            //     //     'openx': function (type, url, bidder) {
-                            //     //         const publisherId = '00000123231231'
-                            //     //         url += &ri=${publisherId};
-                            //     //         return url
-                            //     //     }
-                            //     // },
-                            //     extPrebid: {
-                            //         // cache: {
-                            //         //     vastxml: { returnCreative: true }
-                            //         // },
-                            //         targeting: {
-                            //             pricegranularity: { "ranges": [{ "max": 40.00, "increment": 1.00 }] }
-                            //         }
-                            //     }
-                            // }
+                            // debug: true,
+                            s2sConfig: {
+                                accountId: '1',
+                                bidders: ['alkimi'],
+                                adapter: 'prebidServer',
+                                enabled: true,
+                                endpoint: 'http://localhost:8080/openrtb2/auction',
+                                syncEndpoint: 'http://localhost:8080/cookie_sync',
+                                timeout: 50000,
+                                // syncUrlModifier: {
+                                //     'openx': function (type, url, bidder) {
+                                //         const publisherId = '00000123231231'
+                                //         url += &ri=${publisherId};
+                                //         return url
+                                //     }
+                                // },
+                                extPrebid: {
+                                    // cache: {
+                                    //     vastxml: { returnCreative: true }
+                                    // },
+                                    targeting: {
+                                        pricegranularity: { "ranges": [{ "max": 40.00, "increment": 1.00 }] }
+                                    },
+                                    bidderparams: {
+                                        alkimi: {
+                                            signature: json.signature,
+                                            randomUUID
+                                        }
+                                    }
+                                }
+                            }
                         });
 
                         pbjs.requestBids({
@@ -273,7 +289,8 @@
                     "adList": [
                         {
                             roll: 'preRoll',
-                            vastTag: url
+                            vastTag: url,
+                            nonlinearDuration: 10,
                         }
                     ],
                     "adCTAText": false,
@@ -287,10 +304,10 @@
                         },
                         "vastVideoSkippedCallback": () => { },
                         "vastVideoEndedCallback": () => {
-                            if (vastLoaded) {
-                                myFP = fluidPlayer('vid1', configuration);
-                                myFP.play();
-                            }
+                            // if (vastLoaded) {
+                            //     myFP = fluidPlayer('vid1', configuration);
+                            //     myFP.play();
+                            // }
                         }
                     }
                 }
@@ -302,6 +319,16 @@
         }
 
     </script>
+
+    <style>
+        #fluid_nonLinear_ID0 {
+            display: none;
+        }
+
+        /* #close_button_vid1 {
+            display: none;
+        } */
+    </style>
 
 </head>
 
@@ -324,7 +351,7 @@
     <h5>Video ad</h5>
 
     <video id="vid1" width='640' height='480' muted>
-        <source src="https://cdn.visualidx.com/media/video/one_second_blank.m4v" type='video/mp4' />
+        <!-- <source src="https://cdn.visualidx.com/media/video/one_second_blank.m4v" type='video/mp4' /> -->
         <!-- <source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' /> -->
     </video>
 

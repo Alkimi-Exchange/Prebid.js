@@ -31,6 +31,7 @@
                                 <div class="bidders-list-item-form">
                                     <div class="configuration-name">
                                         <div>DSP ID</div>
+                                        <div>Sign enabled</div>
                                         <div>Banner link</div>
                                         <div>Banner price</div>
                                         <div>Video link</div>
@@ -38,6 +39,7 @@
                                     </div>
                                     <form id="config-form-new" name="Create new DSP config" class="configuration-form">
                                         <input id="dspId" name="dspId" />
+                                        <input id="signEnabled" name="signEnabled" />
                                         <input id="bannerLink" name="bannerLink" />
                                         <input id="bannerPrice" name="bannerPrice" "/>
                                         <input id="videoLink" name="videoLink" />
@@ -90,8 +92,10 @@
                             divOuter.setAttribute("id", dspId)
                             biddersList.appendChild(divOuter)
 
-                            const banner = Object.entries(json[dspId]['Banner'])[0]
-                            const video = Object.entries(json[dspId]['Video'])[0]
+                            const signEnabled = json[dspId]['signEnabled']
+
+                            const banner = Object.entries(json[dspId]['parameters']['Banner'])[0]
+                            const video = Object.entries(json[dspId]['parameters']['Video'])[0]
 
                             let div = document.getElementById(dspId);
                             div.className = 'bidders-list-item'
@@ -99,12 +103,14 @@
                                             <div>DSP ID ${dspId}</div>
                                             <div class="bidders-list-item-form">
                                                 <div class="configuration-name">
+                                                    <div>Sign enabled</div>
                                                     <div>Banner link</div>
                                                     <div>Banner price</div>
                                                     <div>Video link</div>
                                                     <div>Video price</div>
                                                 </div>
                                                 <form id="config-form-${dspId}" name="DSP ID ${dspId}" class="configuration-form">
+                                                    <input id="signEnabled" name="signEnabled" value="${signEnabled}"/>
                                                     <input id="bannerLink" name="bannerLink" value="${banner[0]}"/>
                                                     <input id="bannerPrice" name="bannerPrice" value="${banner[1]}"/>
                                                     <input id="videoLink" name="videoLink" value="${video[0]}"/>
