@@ -1,0 +1,202 @@
+<html>
+
+<head>
+    <script async src="../../build/dev/prebid.js"></script>
+    <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
+    <script src="./sign_utils.js"></script>
+
+    <script>
+        var FAILSAFE_TIMEOUT = 3300;
+        var PREBID_TIMEOUT = 1000;
+
+        var bannerAdUnit = {
+            code: 'div-banner',
+            mediaTypes: {
+                banner: {
+                    sizes: [[300, 250]],
+                }
+            },
+            bids: [{
+                bidder: 'alkimi',
+                params: {
+                    bidFloor: 100,
+                    token: '7d8aac74-ad7c-4015-9e03-b25beb7b257d'
+                }
+            }]
+        };
+
+        var videoAdUnit = {
+            code: 'div-video',
+            mediaTypes: {
+                video: {
+                    playerSize: [[300, 250]],
+                    mimes: ["video/mp4"],
+                    protocols: [1, 2, 3, 4, 5]
+                }
+            },
+            bids: [{
+                bidder: 'alkimi',
+                params: {
+                    bidFloor: 104,
+                    token: '7d8aac74-ad7c-4015-9e03-b25beb7b257d'
+                }
+            }]
+        };
+
+        var pbjs = pbjs || {};
+        pbjs.que = pbjs.que || [];
+    </script>
+
+    <script>
+        pbjs.addAdUnits(bannerAdUnit);
+        pbjs.addAdUnits(videoAdUnit);
+        pbjs.setConfig({
+            cache: {
+                url: "https://prebid.adnxs.com/pbc/v1/cache"
+            },
+            s2sConfig: {
+                accountId: '1',
+                bidders: ['alkimi'],
+                adapter: 'prebidServer',
+                enabled: true,
+                endpoint: 'http://localhost:8080/openrtb2/auction',
+                syncEndpoint: 'http://localhost:8080/cookie_sync'
+            },
+            ortb2: {
+                regs: {
+                    ext: {
+                        gdpr: 0
+                    }
+                }
+            }
+        });
+
+        function renderAds() {
+            if (pbjs.adserverRequestSent) return;
+            pbjs.adserverRequestSent = true;
+
+            var highestCpmBids = pbjs.getHighestCpmBids('div-banner');
+            if (highestCpmBids[0]) {
+                let idIFrame = "div-banner-iframe";
+                let iFrame = "<iframe id='" + idIFrame + "'"
+                    + "onload=\"resizeIframe(this)\""
+                    + " FRAMEBORDER=\"0\""
+                    + " SCROLLING=\"no\""
+                    + " MARGINHEIGHT=\"0\""
+                    + " MARGINWIDTH=\"0\""
+                    + " TOPMARGIN=\"0\""
+                    + " LEFTMARGIN=\"0\""
+                    + " ALLOWTRANSPARENCY=\"true\""
+                    + " WIDTH=\"0\""
+                    + " HEIGHT=\"0\">."
+                    + " </iframe>"
+
+                document.getElementById("div-banner").innerHTML = iFrame
+
+                var iframeDoc = document.getElementById(idIFrame).contentWindow.document
+                pbjs.renderAd(iframeDoc, highestCpmBids[0].adId);
+            }
+
+            highestCpmBids = pbjs.getHighestCpmBids('div-video');
+            if (highestCpmBids[0]) {
+                pbjs.renderAd(document, highestCpmBids[0].adId)
+                var videoUrl = pbjs.adServers.dfp.buildVideoUrl({
+                    adUnit: videoAdUnit,
+                    url: 'https://prebid.adnxs.com/pbc/v1/cache?uuid=' + highestCpmBids[0].videoCacheKey
+                });
+                invokeVideoPlayer(videoUrl);
+            }
+        }
+
+        pbjs.requestBids({
+            bidsBackHandler: renderAds,
+            timeout: PREBID_TIMEOUT
+        });
+
+        setTimeout(function () {
+            renderAds();
+        }, FAILSAFE_TIMEOUT);
+    </script>
+
+    <script>
+        function invokeVideoPlayer(url) {
+            var myFP;
+            var vastLoaded;
+
+            var configuration = {
+                "onBeforeXMLHttpRequestOpen": (request) => {
+                    request.withCredentials = false
+                    return request;
+                },
+                "onBeforeXMLHttpRequest": (request) => {
+                    request.withCredentials = false
+                    return request;
+                },
+                "layoutControls": {
+                    "loop": false,
+                    "controlBar": {
+                        "autoHideTimeout": 3,
+                        "animated": true,
+                        "autoHide": true
+                    },
+                    "htmlOnPauseBlock": {
+                        "html": null,
+                        "height": null,
+                        "width": null
+                    },
+                    "autoPlay": false,
+                    "mute": true,
+                    "allowTheatre": false,
+                    "playPauseAnimation": false,
+                    "playbackRateEnabled": false,
+                    "allowDownload": false,
+                    "playButtonShowing": false,
+                    "fillToContainer": false,
+                    "posterImage": ""
+                },
+                "vastOptions": {
+                    "allowVPAID": true,
+                    "adList": [
+                        {
+                            roll: 'preRoll',
+                            vastTag: url,
+                            nonlinearDuration: 10,
+                        }
+                    ],
+                    "adCTAText": false,
+                    "adCTATextPosition": "",
+                    "vastAdvanced": {
+                        "vastLoadedCallback": () => {
+                            vastLoaded = true;
+                        },
+                        "noVastVideoCallback": () => {
+                            vastLoaded = false;
+                        },
+                        "vastVideoSkippedCallback": () => { },
+                        "vastVideoEndedCallback": () => { }
+                    }
+                }
+            }
+
+            myFP = fluidPlayer('div-video', configuration);
+            myFP.play();
+        }
+    </script>
+
+    <script>
+        function resizeIframe(obj) {
+            obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+            obj.style.width = obj.contentWindow.document.documentElement.scrollWidth + 'px';
+        }
+    </script>
+</head>
+
+<body>
+    <h2>prebid server without gam</h2>
+    <h5>banner</h5>
+    <div id='div-banner'></div>
+    <h5>video</h5>
+    <video id="div-video" width='640' height='480' muted></video>
+</body>
+
+</html>
