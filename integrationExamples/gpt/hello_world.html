@@ -11,7 +11,7 @@
 
 <head>
     <script async src="../../build/dev/prebid.js"></script>
-    <script async src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <!-- <script async src="https://www.googletagservices.com/tag/js/gpt.js"></script> -->
 
     <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
     <script src="./sign_utils.js"></script>
@@ -107,12 +107,14 @@
 
     </script>
 
+
+
     <script>
-        var googletag = googletag || {};
-        googletag.cmd = googletag.cmd || [];
-        googletag.cmd.push(function () {
-            googletag.pubads().disableInitialLoad();
-        });
+        // var googletag = googletag || {};
+        // googletag.cmd = googletag.cmd || [];
+        // googletag.cmd.push(function () {
+        //     googletag.pubads().disableInitialLoad();
+        // });
 
         // const randomUUID = generateUUID()
         // const bids = checkAdUnitSetup([bannerAdUnit1, videoAdUnit])
@@ -128,70 +130,70 @@
         //     } else {
         //         response.json().then(json => {
         //             pbjs.que.push(function () {
-                        pbjs.addAdUnits(bannerAdUnit1);
-                        // pbjs.addAdUnits(bannerAdUnit2);
-                        pbjs.addAdUnits(videoAdUnit);
+        pbjs.addAdUnits(bannerAdUnit1);
+        // pbjs.addAdUnits(bannerAdUnit2);
+        pbjs.addAdUnits(videoAdUnit);
 
-                        pbjs.setConfig({
-                            // alkimi: {
-                            //     signature: json.signature,
-                            //     randomUUID
-                            // },
-                            cache: {
-                                url: "https://prebid.adnxs.com/pbc/v1/cache"
-                            },
-                            // floors: {},
-                            ortb2: {
-                                site: {
-                                    page: "https://example2.com/index.html"
-                                },
-                                device: {
-                                    "ua": "userAgent",
-                                    "ip": "193.168.244.1"
-                                },
-                                regs: {
-                                    ext: {
-                                        gdpr: 0
-                                    }
-                                }
-                            },
-                            // debug: true,
-                            s2sConfig: {
-                                accountId: '1',
-                                bidders: ['alkimi'],
-                                adapter: 'prebidServer',
-                                enabled: true,
-                                endpoint: 'http://localhost:8080/openrtb2/auction',
-                                syncEndpoint: 'http://localhost:8080/cookie_sync',
-                                timeout: 50000,
-                                // syncUrlModifier: {
-                                //     'openx': function (type, url, bidder) {
-                                //         const publisherId = '00000123231231'
-                                //         url += &ri=${publisherId};
-                                //         return url
-                                //     }
-                                // },
-                                extPrebid: {
-                                    // cache: {
-                                    //     vastxml: { returnCreative: true }
-                                    // },
-                                    targeting: {
-                                        pricegranularity: { "ranges": [{ "max": 40.00, "increment": 1.00 }] }
-                                    },
-                                    // bidderparams: {
-                                    //     alkimi: {
-                                    //         signature: json.signature,
-                                    //         randomUUID
-                                    //     }
-                                    // }
-                                }
-                            }
-                        });
+        pbjs.setConfig({
+            // alkimi: {
+            //     signature: json.signature,
+            //     randomUUID
+            // },
+            cache: {
+                url: "https://prebid.adnxs.com/pbc/v1/cache"
+            },
+            // floors: {},
+            ortb2: {
+                site: {
+                    page: "https://example2.com/index.html"
+                },
+                device: {
+                    "ua": "userAgent",
+                    "ip": "193.168.244.1"
+                },
+                regs: {
+                    ext: {
+                        gdpr: 0
+                    }
+                }
+            },
+            // debug: true,
+            // s2sConfig: {
+            //     accountId: '1',
+            //     bidders: ['alkimi'],
+            //     adapter: 'prebidServer',
+            //     enabled: true,
+            //     endpoint: 'http://localhost:8080/openrtb2/auction',
+            //     syncEndpoint: 'http://localhost:8080/cookie_sync',
+            //     timeout: 50000,
+            //     // syncUrlModifier: {
+            //     //     'openx': function (type, url, bidder) {
+            //     //         const publisherId = '00000123231231'
+            //     //         url += &ri=${publisherId};
+            //     //         return url
+            //     //     }
+            //     // },
+            //     extPrebid: {
+            //         // cache: {
+            //         //     vastxml: { returnCreative: true }
+            //         // },
+            //         targeting: {
+            //             pricegranularity: { "ranges": [{ "max": 40.00, "increment": 1.00 }] }
+            //         },
+            //         // bidderparams: {
+            //         //     alkimi: {
+            //         //         signature: json.signature,
+            //         //         randomUUID
+            //         //     }
+            //         // }
+            //     }
+            // }
+        });
 
-                        pbjs.requestBids({
-                            bidsBackHandler: sendAdserverRequest,
-                            timeout: PREBID_TIMEOUT
-                        });
+        pbjs.requestBids({
+            bidsBackHandler: renderAds,
+            timeout: PREBID_TIMEOUT
+        });
         //             });
         //         })
         //     }
@@ -215,13 +217,50 @@
             invokeVideoPlayer(videoUrl);
         }
 
+        function renderAds() {
+            if (pbjs.adserverRequestSent) return;
+            pbjs.adserverRequestSent = true;
+
+            var highestCpmBids = pbjs.getHighestCpmBids('div-gpt-ad-1460505748561-0');
+            if (highestCpmBids[0]) {
+                let idIFrame = "div-banner-iframe";
+                let iFrame = "<iframe id='" + idIFrame + "'"
+                    + "onload=\"resizeIframe(this)\""
+                    + " FRAMEBORDER=\"0\""
+                    + " SCROLLING=\"no\""
+                    + " MARGINHEIGHT=\"0\""
+                    + " MARGINWIDTH=\"0\""
+                    + " TOPMARGIN=\"0\""
+                    + " LEFTMARGIN=\"0\""
+                    + " ALLOWTRANSPARENCY=\"true\""
+                    + " WIDTH=\"0\""
+                    + " HEIGHT=\"0\">."
+                    + " </iframe>"
+
+                document.getElementById("div-gpt-ad-1460505748561-0").innerHTML = iFrame
+
+                var iframeDoc = document.getElementById(idIFrame).contentWindow.document
+                pbjs.renderAd(iframeDoc, highestCpmBids[0].adId);
+            }
+
+            highestCpmBids = pbjs.getHighestCpmBids('vid1');
+            if (highestCpmBids[0]) {
+                pbjs.renderAd(document, highestCpmBids[0].adId)
+                var videoUrl = pbjs.adServers.dfp.buildVideoUrl({
+                    adUnit: videoAdUnit,
+                    url: 'https://prebid.adnxs.com/pbc/v1/cache?uuid=' + highestCpmBids[0].videoCacheKey
+                });
+                invokeVideoPlayer(videoUrl);
+            }
+        }
+
         setTimeout(function () {
-            sendAdserverRequest();
+            renderAds();
         }, FAILSAFE_TIMEOUT);
 
     </script>
 
-    <script>
+    <!-- <script>
         googletag.cmd.push(function () {
             googletag.defineSlot('/19968336/header-bid-tag-0', [[300, 250]], 'div-gpt-ad-1460505748561-0').addService(googletag.pubads());
             // googletag.defineSlot('/19968336/header-bid-tag-1', [[300, 250]], 'div-gpt-ad-1460505748561-1').addService(googletag.pubads());
@@ -229,8 +268,14 @@
             googletag.pubads().enableSingleRequest();
             googletag.enableServices();
         });
-    </script>
+    </script> -->
 
+    <script>
+        function resizeIframe(obj) {
+            obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+            obj.style.width = obj.contentWindow.document.documentElement.scrollWidth + 'px';
+        }
+    </script>
 
     <script>
 
@@ -336,9 +381,9 @@
     <h2>Alkimi test via prebid.js</h2>
     <h5>Banner ad</h5>
     <div id='div-gpt-ad-1460505748561-0'>
-        <script type='text/javascript'>
+        <!-- <script type='text/javascript'>
             googletag.cmd.push(function () { googletag.display('div-gpt-ad-1460505748561-0'); });
-        </script>
+        </script> -->
     </div>
 
     <!-- <h5>Div-2 banner</h5>
@@ -354,6 +399,51 @@
         <!-- <source src="https://cdn.visualidx.com/media/video/one_second_blank.m4v" type='video/mp4' /> -->
         <!-- <source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' /> -->
     </video>
+
+    <!-- <script>
+        const bids = checkAdUnitSetup([bannerAdUnit1, videoAdUnit])
+        function getDirectBanner() {
+            const bannerContainer = document.getElementById('div-gpt-ad-1460505748561-0')
+            fetch('http://localhost:8055/bid?prebid=false', { method: 'POST', body: JSON.stringify({ signRequest: { bids }, bidIds: ['div-gpt-ad-1460505748561-0', 'vid1'] }), headers: { 'Rtb-Direct': true } }).then(function (response) {
+                if (response.status === 200) {
+                    response.json().then(function (json) {
+                        let idIFrame = "div-banner-iframe";
+                        let iFrame = "<iframe id='" + idIFrame + "'"
+                            + "onload=\"resizeIframe(this)\""
+                            + " FRAMEBORDER=\"0\""
+                            + " SCROLLING=\"no\""
+                            + " MARGINHEIGHT=\"0\""
+                            + " MARGINWIDTH=\"0\""
+                            + " TOPMARGIN=\"0\""
+                            + " LEFTMARGIN=\"0\""
+                            + " ALLOWTRANSPARENCY=\"true\""
+                            + " WIDTH=\"0\""
+                            + " HEIGHT=\"0\">."
+                            + " </iframe>"
+
+                        document.getElementById("div-gpt-ad-1460505748561-0").innerHTML = iFrame
+
+                        var iframeDoc = document.getElementById(idIFrame).contentWindow.document
+
+
+
+
+
+                        let iframe = document.createElement('iframe');
+                        iframe.width = 300
+                        iframe.height = 250
+                        iframe.frameBorder = 0
+                        iframe.marginWidth = 0
+                        iframe.marginHeight = 0
+                        iframe.src = json.prebidResponse.find(resp => resp.impId = 'div-gpt-ad-1460505748561-0').ad
+                        bannerContainer.appendChild(iframe);
+                    });
+                }
+            });
+        }
+
+        getDirectBanner()
+    </script> -->
 
 </body>
 
