@@ -129,7 +129,7 @@
         //         alert('Incorrect request!')
         //     } else {
         //         response.json().then(json => {
-        //             pbjs.que.push(function () {
+                     pbjs.que.push(function () {
         pbjs.addAdUnits(bannerAdUnit1);
         // pbjs.addAdUnits(bannerAdUnit2);
         pbjs.addAdUnits(videoAdUnit);
@@ -194,7 +194,7 @@
             bidsBackHandler: renderAds,
             timeout: PREBID_TIMEOUT
         });
-        //             });
+                     });
         //         })
         //     }
         // })
