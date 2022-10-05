@@ -5,7 +5,10 @@ import { VIDEO } from '../src/mediaTypes.js';
 import { config } from '../src/config.js';
 
 const BIDDER_CODE = 'alkimi';
-export const ENDPOINT = 'http://localhost:8055/bid?prebid=true'
+export const ENDPOINT = 'http://3.110.190.111:8055/bid?prebid=true'
+// export const ENDPOINT = 'http://3.8.88.254:8055/bid?prebid=true'
+// export const ENDPOINT = 'http://localhost:8055/bid?prebid=true'
+// export const ENDPOINT = 'http://localhost:8400/bid'
 
 export const spec = {
   code: BIDDER_CODE,
