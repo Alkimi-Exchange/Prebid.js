@@ -33,8 +33,13 @@
         var bannerAdUnit1 = {
             code: 'div-gpt-ad-1460505748561-0',
             mediaTypes: {
+                // video: {
+                //     playerSize: [[300, 250]],
+                //     mimes: ["video/mp4"],
+                //     protocols: [1, 2, 3, 4, 5]
+                // },
                 banner: {
-                    sizes: [[300, 250]],
+                    sizes: [[300, 250]]
                 }
             },
             bids: [{
@@ -133,7 +138,7 @@
         pbjs.que.push(function () {
             pbjs.addAdUnits(bannerAdUnit1);
             // pbjs.addAdUnits(bannerAdUnit2);
-            pbjs.addAdUnits(videoAdUnit);
+            // pbjs.addAdUnits(videoAdUnit);
 
             pbjs.setConfig({
                 // alkimi: {
