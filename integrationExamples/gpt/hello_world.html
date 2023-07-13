@@ -40,7 +40,7 @@
                 // },
                 banner: {
                     sizes: [[300, 250]],
-                    playerSize: [[300, 250]],
+                    // playerSize: [[300, 250]],
                     mimes: ["video/mp4"],
                     protocols: [1, 2, 3, 4, 5],
                     xxxattr: [1,2,3]
@@ -50,6 +50,8 @@
                 bidder: 'alkimi',
                 params: {
                     bidFloor: 0.5,
+                    instl: 1,
+                    exp: 33,
                     // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
                     token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
                     test: () => console.log('test')
@@ -91,6 +93,7 @@
             mediaTypes: {
                 video: {
                     playerSize: [[300, 250]],
+                    // sizes: [[300, 250]],
                     mimes: ["video/mp4"],
                     protocols: [1, 2, 3, 4, 5],
                     xxxattr: [1,2,3]

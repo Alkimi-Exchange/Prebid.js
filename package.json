@@ -6,6 +6,7 @@
   "scripts": {
     "serve": "gulp serve",
     "test": "gulp test",
+    "test-coverage": "gulp test-coverage",
     "lint": "gulp lint",
     "build": "gulp build-bundle-dev --modules=alkimiBidAdapter,dfpAdServerVideo,prebidServerBidAdapter,priceFloors"
   },
