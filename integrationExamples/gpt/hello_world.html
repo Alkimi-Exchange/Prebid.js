@@ -33,42 +33,29 @@
         var bannerAdUnit1 = {
             code: 'div-gpt-ad-1460505748561-0',
             mediaTypes: {
-                // video: {
-                //     playerSize: [[300, 250]],
-                //     mimes: ["video/mp4"],
-                //     protocols: [1, 2, 3, 4, 5]
-                // },
                 banner: {
                     sizes: [[300, 250]],
-                    // playerSize: [[300, 250]],
-                    mimes: ["video/mp4"],
-                    protocols: [1, 2, 3, 4, 5],
-                    xxxattr: [1,2,3]
+                    battr: [1, 2, 3],
+                    btype: [1, 2]
                 }
             },
             bids: [{
                 bidder: 'alkimi',
                 params: {
                     bidFloor: 0.5,
-                    instl: 1,
-                    exp: 33,
+                    instl: 0,
+                    exp: 30,
                     // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
                     token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
-                    test: () => console.log('test')
                 }
             }, {
-                bidder: 'qwarry',
+                bidder: 'unknown',
                 params: {
                     bidFloor: 100,
-                    token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
-                    // zonetoken: '7d8aac74-ad7c-4015-9e03-b25beb7b257d', // localhost
+                    // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
+                    token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
                 }
-            }],
-            gdprConsent: {
-                consentString: "BOJ/P2HOJ/P2HABABMAAAAAZ+A==",
-                gdprApplies: true
-            }
-
+            }]
         };
 
         // var bannerAdUnit2 = {
@@ -93,10 +80,8 @@
             mediaTypes: {
                 video: {
                     playerSize: [[300, 250]],
-                    // sizes: [[300, 250]],
                     mimes: ["video/mp4"],
-                    protocols: [1, 2, 3, 4, 5],
-                    xxxattr: [1,2,3]
+                    protocols: [1, 2, 3, 4, 5]
                 }
             },
             bids: [{
@@ -105,13 +90,6 @@
                     bidFloor: 0.4,
                     // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
                     token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
-                }
-            },
-            {
-                bidder: 'alkimi2',
-                params: {
-                    bidFloor: 0.4,
-                    token: 'a6b042a5-2d68-4110-a051-77fbaf002035',
                 }
             }]
         };
@@ -149,6 +127,40 @@
             pbjs.addAdUnits(videoAdUnit);
 
             pbjs.setConfig({
+                consentManagement: {
+                    gdpr: {
+                        cmpApi: 'static',
+                        consentData: {
+                            getTCData: {
+                                tcString: 'COwK6gaOwK6gaFmAAAENAPCAAAAAAAAAAAAAAAAAAAAA.IFoEUQQgAIQwgIwQABAEAAAAOIAACAIAAAAQAIAgEAACEAAAAAgAQBAAAAAAAGBAAgAAAAAAAFAAECAAAgAAQARAEQAAAAAJAAIAAgAAAYQEAAAQmAgBC3ZAYzUw',
+                                gdprApplies: true
+                            }
+                        }
+                    },
+                    usp: {
+                        cmpApi: 'static',
+                        consentData: {
+                            getUSPData: {
+                                uspString: '1YYY'
+                            }
+                        }
+                    }
+                },
+                schain: {
+                    validation: "strict",
+                    config: {
+                        ver: "1.0",
+                        complete: 0,
+                        nodes: [
+                            {
+                                asi: "indirectseller.com",
+                                sid: "00001",
+                                hp: 1
+                            }
+                        ]
+                    }
+                },
+                coppa: 1,
                 // alkimi: {
                 //     signature: json.signature,
                 //     randomUUID
@@ -169,7 +181,10 @@
                         ext: {
                             gdpr: 0
                         }
-                    }
+                    },
+                    at: 2,
+                    bcat: ["BSW1", "BSW2"],
+                    wseat: ["16", "165"]
                 },
                 // debug: true,
                 // s2sConfig: {
