@@ -34,15 +34,10 @@
             code: 'div-gpt-ad-1460505748561-0',
             mediaTypes: {
                 banner: {
-                    sizes: [[300, 250], [640, 480]],
+                    sizes: [[300, 250]],
                     battr: [1, 2, 3],
                     btype: [1, 2],
                     pos: 1
-                },
-                video: {
-                    playerSize: [[300, 250]],
-                    mimes: ["video/mp4"],
-                    protocols: [1, 2, 3, 4, 5]
                 }
             },
             bids: [{
@@ -100,6 +95,25 @@
             }]
         };
 
+        var audioAdUnit = {
+            code: 'audio',
+            mediaTypes: {
+                audio: {
+                    sizes: [[300, 250]],
+                    mimes: ["audio/mp3"]
+                    
+                }
+            },
+            bids: [{
+                bidder: 'alkimi',
+                params: {
+                    bidFloor: 0.4,
+                    // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
+                    token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
+                }
+            }]
+        };
+
         var pbjs = pbjs || {};
         pbjs.que = pbjs.que || [];
 
@@ -130,7 +144,8 @@
         pbjs.que.push(function () {
             pbjs.addAdUnits(bannerAdUnit1);
             // pbjs.addAdUnits(bannerAdUnit2);
-            // pbjs.addAdUnits(videoAdUnit);
+            pbjs.addAdUnits(videoAdUnit);
+            // pbjs.addAdUnits(audioAdUnit);
 
             pbjs.setConfig({
                 consentManagement: {
@@ -188,8 +203,10 @@
                             fields: ['mediaType', 'size']
                         },
                         values: {
-                            'banner|*': 0.5,
-                            'video|300x250': 0.4
+                            'banner|300x250': 0.5,
+                            'banner|300x251': 0.6,
+                            'video|*': 0.4,
+                            'audio|*': 0.3
                         }
                     }
                 },
@@ -497,6 +514,10 @@
 
         getDirectBanner()
     </script> -->
+
+    <div id='audio'>
+        
+    </div>
 
 </body>
 
