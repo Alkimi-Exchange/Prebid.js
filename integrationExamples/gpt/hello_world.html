@@ -11,7 +11,7 @@
 
 <head>
     <script async src="../../build/dev/prebid.js"></script>
-    <!-- <script async src="https://www.googletagservices.com/tag/js/gpt.js"></script> -->
+    <script async src="https://www.googletagservices.com/tag/js/gpt.js"></script>
 
     <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
     <script src="./sign_utils.js"></script>
@@ -101,7 +101,7 @@
                 audio: {
                     sizes: [[300, 250]],
                     mimes: ["audio/mp3"]
-                    
+
                 }
             },
             bids: [{
@@ -122,11 +122,11 @@
 
 
     <script>
-        // var googletag = googletag || {};
-        // googletag.cmd = googletag.cmd || [];
-        // googletag.cmd.push(function () {
-        //     googletag.pubads().disableInitialLoad();
-        // });
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+        googletag.cmd.push(function () {
+            googletag.pubads().disableInitialLoad();
+        });
 
         // const randomUUID = generateUUID()
         // const bids = checkAdUnitSetup([bannerAdUnit1, videoAdUnit])
@@ -212,7 +212,8 @@
                 },
                 ortb2: {
                     site: {
-                        page: "https://example2.com/index.html"
+                        page: "https://example2.com/index.html",
+                        keywords: "test, test2"
                     },
                     device: {
                         "ua": "userAgent",
@@ -226,14 +227,14 @@
                     at: 2,
                     bcat: ["BSW1", "BSW2"],
                     wseat: ["16", "165"]
-                }
+                },
                 // debug: true,
                 // s2sConfig: {
-                //     accountId: '1',
+                //     accountId: '1001',
                 //     bidders: ['alkimi'],
                 //     adapter: 'prebidServer',
                 //     enabled: true,
-                //     endpoint: 'http://localhost:8080/openrtb2/auction',
+                //     endpoint: 'https://prebid-srv.alkimi-onboarding-dev.com/openrtb2/auction',
                 //     syncEndpoint: 'http://localhost:8080/cookie_sync',
                 //     timeout: 50000,
                 //     // syncUrlModifier: {
@@ -261,7 +262,7 @@
             });
 
             pbjs.requestBids({
-                bidsBackHandler: renderAds,
+                bidsBackHandler: sendAdserverRequest,
                 timeout: PREBID_TIMEOUT
             });
         });
@@ -330,22 +331,22 @@
 
     </script>
 
-    <!-- <script>
+    <script>
         googletag.cmd.push(function () {
             googletag.defineSlot('/19968336/header-bid-tag-0', [[300, 250]], 'div-gpt-ad-1460505748561-0').addService(googletag.pubads());
-            // googletag.defineSlot('/19968336/header-bid-tag-1', [[300, 250]], 'div-gpt-ad-1460505748561-1').addService(googletag.pubads());
+            googletag.defineSlot('/19968336/header-bid-tag-1', [[300, 250]], 'vid1').addService(googletag.pubads());
 
             googletag.pubads().enableSingleRequest();
             googletag.enableServices();
         });
-    </script> -->
+    </script>
 
-    <script>
+    <!-- <script>
         function resizeIframe(obj) {
             obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
             obj.style.width = obj.contentWindow.document.documentElement.scrollWidth + 'px';
         }
-    </script>
+    </script> -->
 
     <script>
 
@@ -516,7 +517,7 @@
     </script> -->
 
     <div id='audio'>
-        
+
     </div>
 
 </body>
