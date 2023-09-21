@@ -6,7 +6,7 @@ import {config} from '../src/config.js';
 
 const BIDDER_CODE = 'alkimi';
 const GVLID = 1169;
-export const ENDPOINT = 'https://exchange.alkimi-onboarding.com/bid?prebid=true';
+export const ENDPOINT = 'http://localhost:8055/bid?prebid=true';
 
 export const spec = {
   code: BIDDER_CODE,
