@@ -11,7 +11,7 @@
 
 <head>
     <script async src="../../build/dev/prebid.js"></script>
-    <script async src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <!-- <script async src="https://www.googletagservices.com/tag/js/gpt.js"></script> -->
 
     <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
     <script src="./sign_utils.js"></script>
@@ -31,7 +31,7 @@
         var PREBID_TIMEOUT = 1000;
 
         var bannerAdUnit1 = {
-            code: 'div-gpt-ad-1460505748561-0',
+            code: 'div-gpt-banner1',
             mediaTypes: {
                 banner: {
                     sizes: [[300, 250]],
@@ -122,11 +122,11 @@
 
 
     <script>
-        var googletag = googletag || {};
-        googletag.cmd = googletag.cmd || [];
-        googletag.cmd.push(function () {
-            googletag.pubads().disableInitialLoad();
-        });
+        // var googletag = googletag || {};
+        // googletag.cmd = googletag.cmd || [];
+        // googletag.cmd.push(function () {
+        //     googletag.pubads().disableInitialLoad();
+        // });
 
         // const randomUUID = generateUUID()
         // const bids = checkAdUnitSetup([bannerAdUnit1, videoAdUnit])
@@ -225,6 +225,11 @@
                         }
                     },
                     at: 2,
+                    source: {
+                        ext: {
+                            full_page_auction: false
+                        }
+                    },
                     bcat: ["BSW1", "BSW2"],
                     wseat: ["16", "165"]
                 },
@@ -262,7 +267,7 @@
             });
 
             pbjs.requestBids({
-                bidsBackHandler: sendAdserverRequest,
+                bidsBackHandler: renderAds,
                 timeout: PREBID_TIMEOUT
             });
         });
@@ -292,7 +297,7 @@
             if (pbjs.adserverRequestSent) return;
             pbjs.adserverRequestSent = true;
 
-            var highestCpmBids = pbjs.getHighestCpmBids('div-gpt-ad-1460505748561-0');
+            var highestCpmBids = pbjs.getHighestCpmBids('div-gpt-banner1');
             if (highestCpmBids[0]) {
                 let idIFrame = "div-banner-iframe";
                 let iFrame = "<iframe id='" + idIFrame + "'"
@@ -308,10 +313,13 @@
                     + " HEIGHT=\"0\">."
                     + " </iframe>"
 
-                document.getElementById("div-gpt-ad-1460505748561-0").innerHTML = iFrame
+                document.getElementById("div-gpt-banner1").innerHTML = iFrame
 
                 var iframeDoc = document.getElementById(idIFrame).contentWindow.document
                 pbjs.renderAd(iframeDoc, highestCpmBids[0].adId);
+
+                let div = document.getElementById('div-gpt-banner1Cpm');
+                div.innerHTML = `<div>dspID: ${highestCpmBids[0].creativeId}</div>`
             }
 
             highestCpmBids = pbjs.getHighestCpmBids('vid1');
@@ -322,6 +330,9 @@
                     url: 'https://prebid.adnxs.com/pbc/v1/cache?uuid=' + highestCpmBids[0].videoCacheKey
                 });
                 invokeVideoPlayer(videoUrl);
+
+                let div = document.getElementById('vid1Cpm');
+                div.innerHTML = `<div>dspID: ${highestCpmBids[0].creativeId}</div>`
             }
         }
 
@@ -331,22 +342,22 @@
 
     </script>
 
-    <script>
+    <!-- <script>
         googletag.cmd.push(function () {
-            googletag.defineSlot('/19968336/header-bid-tag-0', [[300, 250]], 'div-gpt-ad-1460505748561-0').addService(googletag.pubads());
+            googletag.defineSlot('/19968336/header-bid-tag-0', [[300, 250]], 'div-gpt-banner1').addService(googletag.pubads());
             googletag.defineSlot('/19968336/header-bid-tag-1', [[300, 250]], 'vid1').addService(googletag.pubads());
 
             googletag.pubads().enableSingleRequest();
             googletag.enableServices();
         });
-    </script>
+    </script> -->
 
-    <!-- <script>
+    <script>
         function resizeIframe(obj) {
             obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
             obj.style.width = obj.contentWindow.document.documentElement.scrollWidth + 'px';
         }
-    </script> -->
+    </script>
 
     <script>
 
@@ -450,8 +461,9 @@
 
 <body>
     <h2>Alkimi test via prebid.js</h2>
-    <h5>Banner ad</h5>
-    <div id='div-gpt-ad-1460505748561-0'>
+    <div>Banner ad</div>
+    <div id="div-gpt-banner1Cpm"></div>
+    <div id='div-gpt-banner1'>
         <!-- <script type='text/javascript'>
             googletag.cmd.push(function () { googletag.display('div-gpt-ad-1460505748561-0'); });
         </script> -->
@@ -463,9 +475,9 @@
             googletag.cmd.push(function () { googletag.display('div-gpt-ad-1460505748561-1'); });
         </script>
     </div> -->
-
-    <h5>Video ad</h5>
-
+    <br/>
+    <div>Video ad</div>
+    <div id="vid1Cpm"></div>
     <video id="vid1" width='640' height='480' muted>
         <!-- <source src="https://cdn.visualidx.com/media/video/one_second_blank.m4v" type='video/mp4' /> -->
         <!-- <source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' /> -->
