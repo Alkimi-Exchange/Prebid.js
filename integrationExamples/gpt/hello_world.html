@@ -183,10 +183,11 @@
                 },
                 coppa: 1,
                 enableTIDs: true,
-                // alkimi: {
+                alkimi: {
                 //     signature: json.signature,
                 //     randomUUID
-                // },
+                    walletID: "test"
+                },
                 cache: {
                     url: "https://prebid.adnxs.com/pbc/v1/cache"
                 },
@@ -319,7 +320,10 @@
                 pbjs.renderAd(iframeDoc, highestCpmBids[0].adId);
 
                 let div = document.getElementById('div-gpt-banner1Cpm');
-                div.innerHTML = `<div>dspID: ${highestCpmBids[0].creativeId}</div>`
+                div.innerHTML = `
+                    <div>dspID: ${highestCpmBids[0].creativeId}</div>
+                    <div>CPM: ${highestCpmBids[0].cpm}</div>
+                `
             }
 
             highestCpmBids = pbjs.getHighestCpmBids('vid1');
@@ -332,7 +336,10 @@
                 invokeVideoPlayer(videoUrl);
 
                 let div = document.getElementById('vid1Cpm');
-                div.innerHTML = `<div>dspID: ${highestCpmBids[0].creativeId}</div>`
+                div.innerHTML = `
+                    <div>dspID: ${highestCpmBids[0].creativeId}</div>
+                    <div>CPM: ${highestCpmBids[0].cpm}</div>
+                `
             }
         }
 
