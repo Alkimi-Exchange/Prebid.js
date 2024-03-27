@@ -147,6 +147,12 @@
             pbjs.addAdUnits(videoAdUnit);
             // pbjs.addAdUnits(audioAdUnit);
 
+            pbjs.bidderSettings = {
+                alkimi: {
+                    storageAllowed: true
+                }
+            }
+
             pbjs.setConfig({
                 consentManagement: {
                     gdpr: {
@@ -184,13 +190,13 @@
                 coppa: 1,
                 enableTIDs: true,
                 alkimi: {
-                //     signature: json.signature,
-                //     randomUUID
-                    walletID: "testWallet",
-                    userParams: {
-                        param1: "test1",
-                        param2: "test2"
-                    }
+                    //     signature: json.signature,
+                    //     randomUUID
+                    // walletID: "testWallet",
+                    // userParams: {
+                    //     param1: "test1",
+                    //     param2: "test2"
+                    // }
                 },
                 cache: {
                     url: "https://prebid.adnxs.com/pbc/v1/cache"
@@ -218,7 +224,10 @@
                 ortb2: {
                     site: {
                         page: "https://example2.com/index.html",
-                        keywords: "test, test2"
+                        // keywords: "test, test2",
+                        cat: ["IAB2"],
+                        pagecat: ["IAB2-2"],
+                        sectioncat: ["IAB2-2"]
                     },
                     device: {
                         "ua": "userAgent",
@@ -486,7 +495,7 @@
             googletag.cmd.push(function () { googletag.display('div-gpt-ad-1460505748561-1'); });
         </script>
     </div> -->
-    <br/>
+    <br />
     <div>Video ad</div>
     <div id="vid1Cpm"></div>
     <video id="vid1" width='640' height='480' muted>
