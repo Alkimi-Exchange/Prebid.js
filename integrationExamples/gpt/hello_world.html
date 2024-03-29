@@ -144,7 +144,7 @@
         pbjs.que.push(function () {
             pbjs.addAdUnits(bannerAdUnit1);
             // pbjs.addAdUnits(bannerAdUnit2);
-            pbjs.addAdUnits(videoAdUnit);
+            // pbjs.addAdUnits(videoAdUnit);
             // pbjs.addAdUnits(audioAdUnit);
 
             pbjs.bidderSettings = {
@@ -214,10 +214,10 @@
                             fields: ['mediaType', 'size']
                         },
                         values: {
-                            'banner|300x250': 0.5,
-                            'banner|300x251': 0.6,
-                            'video|*': 0.4,
-                            'audio|*': 0.3
+                            'banner|300x250': 1.6,
+                            'banner|300x251': 1.6,
+                            'video|*': 1.6,
+                            'audio|*': 1.6
                         }
                     }
                 },
@@ -241,7 +241,7 @@
                     at: 2,
                     source: {
                         ext: {
-                            full_page_auction: false
+                            full_page_auction: true
                         }
                     },
                     bcat: ["BSW1", "BSW2"],
