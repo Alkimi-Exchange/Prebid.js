@@ -144,7 +144,7 @@
         pbjs.que.push(function () {
             pbjs.addAdUnits(bannerAdUnit1);
             // pbjs.addAdUnits(bannerAdUnit2);
-            // pbjs.addAdUnits(videoAdUnit);
+            pbjs.addAdUnits(videoAdUnit);
             // pbjs.addAdUnits(audioAdUnit);
 
             pbjs.bidderSettings = {
@@ -247,6 +247,14 @@
                     bcat: ["BSW1", "BSW2"],
                     wseat: ["16", "165"]
                 },
+                userSync: {
+                    filterSettings: {
+                        iframe: {
+                            bidders: '*',   // '*' means all bidders
+                            filter: 'include'
+                        }
+                    }
+                }
                 // debug: true,
                 // s2sConfig: {
                 //     accountId: '1001',

@@ -152,6 +152,24 @@ export const spec = {
       return true;
     }
     return false;
+  },
+
+  getUserSyncs: function(syncOptions, serverResponses, gdprConsent) {
+    if (syncOptions.iframeEnabled && serverResponses.length > 0) {
+      const serverBody = serverResponses[0].body;
+      if (!serverBody || typeof serverBody !== 'object') return [];
+
+      const { iframeList } = serverBody;
+      if (!iframeList || typeof iframeList !== 'object') return [];
+
+      const urls = [];
+      iframeList.forEach(url => {
+        urls.push({type: 'iframe', url});
+      })
+
+      return urls;
+    }
+    return [];
   }
 }
 
