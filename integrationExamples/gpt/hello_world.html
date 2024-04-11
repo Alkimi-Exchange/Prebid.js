@@ -43,7 +43,7 @@
             bids: [{
                 bidder: 'alkimi',
                 params: {
-                    // bidFloor: 0.5,
+                    bidFloor: 0.01,
                     instl: 0,
                     exp: 30,
                     // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
@@ -88,7 +88,7 @@
             bids: [{
                 bidder: 'alkimi',
                 params: {
-                    // bidFloor: 0.4,
+                    bidFloor: 0.01,
                     // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
                     token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
                 }
@@ -214,10 +214,10 @@
                             fields: ['mediaType', 'size']
                         },
                         values: {
-                            'banner|300x250': 1.6,
-                            'banner|300x251': 1.6,
-                            'video|*': 1.6,
-                            'audio|*': 1.6
+                            'banner|300x250': 0.01,
+                            'banner|300x251': 0.01,
+                            'video|*': 0.01,
+                            'audio|*': 0.01
                         }
                     }
                 },
