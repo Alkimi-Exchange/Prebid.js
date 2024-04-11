@@ -8,7 +8,7 @@ import {config} from '../src/config.js';
 const BIDDER_CODE = 'alkimi';
 const GVLID = 1169;
 const USER_ID_KEY = 'alkimiUserID';
-export const ENDPOINT = 'http://localhost:8055/bid?prebid=true';
+export const ENDPOINT = 'https://exchange.alkimi-onboarding.com/bid?prebid=true';
 export const storage = getStorageManager({bidderCode: BIDDER_CODE});
 
 export const spec = {
