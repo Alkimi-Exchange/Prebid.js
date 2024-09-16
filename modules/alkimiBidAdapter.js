@@ -107,9 +107,12 @@ export const spec = {
       }
     }
 
+    const queryParams = new URLSearchParams(window.location.search)
+    const trace = queryParams.has('alkimi_trace', true)
+
     return {
       method: 'POST',
-      url: ENDPOINT,
+      url: ENDPOINT + (trace ? '&trace=true' : ''),
       data: payload,
       options
     };
