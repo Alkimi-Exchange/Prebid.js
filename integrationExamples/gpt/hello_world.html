@@ -37,6 +37,11 @@
 
         var bannerAdUnit1 = {
             code: 'div-gpt-banner1',
+            ortb2Imp: {
+                ext: {
+                    gpid: "/1111/div-gpt-banner1#300x250"
+                }
+            },
             mediaTypes: {
                 banner: {
                     sizes: [[300, 250]],
@@ -55,11 +60,11 @@
                     token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
                 }
             }, {
-                bidder: 'unknown',
+                bidder: 'qwarry',
                 params: {
                     bidFloor: 100,
                     // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
-                    token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
+                    zoneToken: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
                 }
             }]
         };
@@ -83,6 +88,11 @@
 
         var videoAdUnit = {
             code: 'vid1',
+            ortb2Imp: {
+                ext: {
+                    gpid: "/1111/vid1#300x250"
+                }
+            },
             mediaTypes: {
                 video: {
                     playerSize: [[300, 250]],
@@ -102,6 +112,11 @@
 
         var audioAdUnit = {
             code: 'audio',
+            ortb2Imp: {
+                ext: {
+                    gpid: "/1111/audio#300x250"
+                }
+            },
             mediaTypes: {
                 audio: {
                     sizes: [[300, 250]],
@@ -246,7 +261,7 @@
                     at: 2,
                     source: {
                         ext: {
-                            fpa: true
+                            fpa: false,
                         }
                     },
                     bcat: ["BSW1", "BSW2"],
@@ -259,14 +274,14 @@
                             filter: 'include'
                         }
                     }
-                }
+                },
                 // debug: true,
                 // s2sConfig: {
                 //     accountId: '1001',
                 //     bidders: ['alkimi'],
                 //     adapter: 'prebidServer',
                 //     enabled: true,
-                //     endpoint: 'https://prebid-srv.alkimi-onboarding-dev.com/openrtb2/auction',
+                //     endpoint: 'http://localhost:8080/openrtb2/auction',
                 //     syncEndpoint: 'http://localhost:8080/cookie_sync',
                 //     timeout: 50000,
                 //     // syncUrlModifier: {
@@ -410,110 +425,110 @@
 
 
 
-            // var myFP;
-            // var vastLoaded;
+            var myFP;
+            var vastLoaded;
 
-            // var configuration = {
-            //     "onBeforeXMLHttpRequestOpen": (request) => {
-            //         request.withCredentials = false
-            //         return request;
-            //     },
-            //     "onBeforeXMLHttpRequest": (request) => {
-            //         request.withCredentials = false
-            //         return request;
-            //     },
-            //     "layoutControls": {
-            //         "loop": false,
-            //         "controlBar": {
-            //             "autoHideTimeout": 3,
-            //             "animated": true,
-            //             "autoHide": true
-            //         },
-            //         "htmlOnPauseBlock": {
-            //             "html": null,
-            //             "height": null,
-            //             "width": null
-            //         },
-            //         "autoPlay": false,
-            //         "mute": true,
-            //         "allowTheatre": false,
-            //         "playPauseAnimation": false,
-            //         "playbackRateEnabled": false,
-            //         "allowDownload": false,
-            //         "playButtonShowing": false,
-            //         "fillToContainer": false,
-            //         "posterImage": ""
-            //     },
-            //     "vastOptions": {
-            //         "allowVPAID": true,
-            //         "adList": [
-            //             {
-            //                 roll: 'preRoll',
-            //                 vastTag: url,
-            //                 nonlinearDuration: 10,
-            //             }
-            //         ],
-            //         "adCTAText": false,
-            //         "adCTATextPosition": "",
-            //         "vastAdvanced": {
-            //             "vastLoadedCallback": () => {
-            //                 vastLoaded = true;
-            //             },
-            //             "noVastVideoCallback": () => {
-            //                 vastLoaded = false;
-            //             },
-            //             "vastVideoSkippedCallback": () => { },
-            //             "vastVideoEndedCallback": () => {
-            //                 // if (vastLoaded) {
-            //                 //     myFP = fluidPlayer('vid1', configuration);
-            //                 //     myFP.play();
-            //                 // }
-            //             }
-            //         }
-            //     }
-            // }
-
-            // myFP = fluidPlayer('vid1', configuration);
-            // myFP.play();
-
-            // var playerDiv = document.createElement('div')
-            // playerDiv.setAttribute('id', 'vast-player-div')
-            // playerDiv.setAttribute('style', 'width:300px;height:200px;')
-            // document.body.appendChild(playerDiv)
-
-            let player
-            const config = {
-                targetId: 'vid1',
-                provider: {
-                    partnerId: -1,
+            var configuration = {
+                "onBeforeXMLHttpRequestOpen": (request) => {
+                    request.withCredentials = false
+                    return request;
                 },
-                playback: {
-                    autoplay: true,
-                    allowMutedAutoPlay: true,
+                "onBeforeXMLHttpRequest": (request) => {
+                    request.withCredentials = false
+                    return request;
                 },
-                sources: {
-                    progressive: [{
-                        mimetype: "video/mp4",
-                        url: "https://cdn.visualidx.com/media/video/one_second_blank.m4v"
-                    }]
+                "layoutControls": {
+                    "loop": false,
+                    "controlBar": {
+                        "autoHideTimeout": 3,
+                        "animated": true,
+                        "autoHide": true
+                    },
+                    "htmlOnPauseBlock": {
+                        "html": null,
+                        "height": null,
+                        "width": null
+                    },
+                    "autoPlay": false,
+                    "mute": true,
+                    "allowTheatre": false,
+                    "playPauseAnimation": false,
+                    "playbackRateEnabled": false,
+                    "allowDownload": false,
+                    "playButtonShowing": false,
+                    "fillToContainer": false,
+                    "posterImage": ""
                 },
-                plugins: {
-                    ima: {
-                        adTagUrl: url
+                "vastOptions": {
+                    "allowVPAID": true,
+                    "adList": [
+                        {
+                            roll: 'preRoll',
+                            vastTag: url,
+                            nonlinearDuration: 10,
+                        }
+                    ],
+                    "adCTAText": false,
+                    "adCTATextPosition": "",
+                    "vastAdvanced": {
+                        "vastLoadedCallback": () => {
+                            vastLoaded = true;
+                        },
+                        "noVastVideoCallback": () => {
+                            vastLoaded = false;
+                        },
+                        "vastVideoSkippedCallback": () => { },
+                        "vastVideoEndedCallback": () => {
+                            // if (vastLoaded) {
+                            //     myFP = fluidPlayer('vid1', configuration);
+                            //     myFP.play();
+                            // }
+                        }
                     }
                 }
             }
 
-            const init = () => player.addEventListener(player.Event.Core.ALL_ADS_COMPLETED, e => {
-                if (player) {
-                    player.destroy()
-                    player = KalturaPlayer.setup(config)
-                    init()
-                }
-            })
+            myFP = fluidPlayer('vid1', configuration);
+            myFP.play();
 
-            player = KalturaPlayer.setup(config)
-            init()
+            var playerDiv = document.createElement('div')
+            playerDiv.setAttribute('id', 'vast-player-div')
+            playerDiv.setAttribute('style', 'width:300px;height:200px;')
+            document.body.appendChild(playerDiv)
+
+            // let player
+            // const config = {
+            //     targetId: 'vid1',
+            //     provider: {
+            //         partnerId: -1,
+            //     },
+            //     playback: {
+            //         autoplay: true,
+            //         allowMutedAutoPlay: true,
+            //     },
+            //     sources: {
+            //         progressive: [{
+            //             mimetype: "video/mp4",
+            //             url: "https://cdn.visualidx.com/media/video/one_second_blank.m4v"
+            //         }]
+            //     },
+            //     plugins: {
+            //         ima: {
+            //             adTagUrl: url
+            //         }
+            //     }
+            // }
+
+            // const init = () => player.addEventListener(player.Event.Core.ALL_ADS_COMPLETED, e => {
+            //     if (player) {
+            //         player.destroy()
+            //         player = KalturaPlayer.setup(config)
+            //         init()
+            //     }
+            // })
+
+            // player = KalturaPlayer.setup(config)
+            // init()
 
             // let firstPlay = false
             // clickHandler = e => {
@@ -559,10 +574,10 @@
     <br />
     <div>Video ad</div>
     <div id="vid1Cpm"></div>
-    <div id="vid1" style="width: 640px; height: 480px;" >
-        <!-- <source src="https://cdn.visualidx.com/media/video/one_second_blank.m4v" type='video/mp4' /> -->
+    <video id="vid1" style="width: 640px; height: 480px;">
+        <source src="https://cdn.visualidx.com/media/video/one_second_blank.m4v" type='video/mp4' />
         <!-- <source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4' /> -->
-    </div>
+    </video>
 
     <!-- <script>
         const bids = checkAdUnitSetup([bannerAdUnit1, videoAdUnit])
