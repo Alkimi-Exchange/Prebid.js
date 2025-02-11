@@ -142,6 +142,17 @@
 
 
     <script>
+        let token = {
+            "advertising_token": "cececce4-5375-4133-a79a-a683411bcefev",
+            "refresh_token": "cececce4-5375-4133-a79a-a683411bcefe",
+            "identity_expires": 1633643601000,
+            "refresh_from": 1633643001000,
+            "refresh_expires": 1636322000000,
+            "refresh_response_key": "wR5t6HKMfJ2r4J7fEGX9Gw=="
+        }
+
+
+
         // var googletag = googletag || {};
         // googletag.cmd = googletag.cmd || [];
         // googletag.cmd.push(function () {
@@ -174,25 +185,25 @@
             }
 
             pbjs.setConfig({
-                consentManagement: {
-                    gdpr: {
-                        cmpApi: 'static',
-                        consentData: {
-                            getTCData: {
-                                tcString: 'COwK6gaOwK6gaFmAAAENAPCAAAAAAAAAAAAAAAAAAAAA.IFoEUQQgAIQwgIwQABAEAAAAOIAACAIAAAAQAIAgEAACEAAAAAgAQBAAAAAAAGBAAgAAAAAAAFAAECAAAgAAQARAEQAAAAAJAAIAAgAAAYQEAAAQmAgBC3ZAYzUw',
-                                gdprApplies: true
-                            }
-                        }
-                    },
-                    usp: {
-                        cmpApi: 'static',
-                        consentData: {
-                            getUSPData: {
-                                uspString: '1YYY'
-                            }
-                        }
-                    }
-                },
+                // consentManagement: {
+                //     gdpr: {
+                //         cmpApi: 'static',
+                //         consentData: {
+                //             getTCData: {
+                //                 tcString: 'COwK6gaOwK6gaFmAAAENAPCAAAAAAAAAAAAAAAAAAAAA.IFoEUQQgAIQwgIwQABAEAAAAOIAACAIAAAAQAIAgEAACEAAAAAgAQBAAAAAAAGBAAgAAAAAAAFAAECAAAgAAQARAEQAAAAAJAAIAAgAAAYQEAAAQmAgBC3ZAYzUw',
+                //                 gdprApplies: true
+                //             }
+                //         }
+                //     },
+                //     usp: {
+                //         cmpApi: 'static',
+                //         consentData: {
+                //             getUSPData: {
+                //                 uspString: '1YYY'
+                //             }
+                //         }
+                //     }
+                // },
                 schain: {
                     validation: "strict",
                     config: {
@@ -207,7 +218,7 @@
                         ]
                     }
                 },
-                coppa: 1,
+                // coppa: 1,
                 enableTIDs: true,
                 alkimi: {
                     //     signature: json.signature,
@@ -268,12 +279,42 @@
                     wseat: ["16", "165"]
                 },
                 userSync: {
-                    filterSettings: {
-                        iframe: {
-                            bidders: '*',   // '*' means all bidders
-                            filter: 'include'
+                    // filterSettings: {
+                    //     iframe: {
+                    //         bidders: '*',   // '*' means all bidders
+                    //         filter: 'include'
+                    //     }
+                    // },
+                    userIds: [
+                        //     {
+                        //     name: "identityLink",
+                        //     bidders: [
+                        //         'alkimi'
+                        //     ],
+                        //     params: {
+                        //         pid: "999",             // Set your Placement ID here
+                        //         notUse3P: true
+                        //     },
+                        //     storage: {
+                        //         type: "cookie",
+                        //         name: "idl_env",        // "idl_env" is the required storage name
+                        //         expires: 15,            // RampID envelope can last for 15 days
+                        //         refreshInSeconds: 1800  // RampID envelope will be updated every 30 minutes
+                        //     }
+                        // }
+                        // , 
+                        {
+                            name: 'uid2',
+                            params: {
+                                uid2Token: 'cececce4-5375-4133-a79a-a683411bcefe'
+
+                            },
+                            bidders: [
+                                'alkimi'
+                            ]
                         }
-                    }
+                    ],
+                    syncDelay: 3000
                 },
                 // debug: true,
                 // s2sConfig: {

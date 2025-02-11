@@ -8,7 +8,7 @@
     "test": "gulp test",
     "test-coverage": "gulp test-coverage",
     "lint": "gulp lint",
-    "build": "gulp build-bundle-dev --modules=alkimiBidAdapter,dfpAdServerVideo,prebidServerBidAdapter,priceFloors,consentManagement,consentManagementUsp,schain"
+    "build": "gulp build-bundle-dev --modules=alkimiBidAdapter,dfpAdServerVideo,prebidServerBidAdapter,priceFloors,consentManagement,consentManagementUsp,schain,uid2IdSystem,identityLinkIdSystem,userId"
   },
   "repository": {
     "type": "git",
