@@ -10,7 +10,7 @@ jobs:
   track_issue:
     permissions:
       contents: none
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Generate token
         id: generate_token
