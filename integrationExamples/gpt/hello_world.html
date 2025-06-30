@@ -59,32 +59,35 @@
                     // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
                     token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
                 }
-            }, {
-                bidder: 'qwarry',
+            },
+            {
+                bidder: 'alkimi2',
                 params: {
-                    bidFloor: 100,
+                    bidFloor: 1.4,
+                    instl: 0,
+                    exp: 30,
                     // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
-                    zoneToken: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
+                    token: '57ee3faf-334a-4b6e-8c40-29d9443780d6', // localhost
                 }
             }]
         };
 
-        // var bannerAdUnit2 = {
-        //     code: 'div-gpt-ad-1460505748561-1',
-        //     mediaTypes: {
-        //         banner: {
-        //             sizes: [[300, 250]],
-        //         }
-        //     },
-        //     bids: [{
-        //         bidder: 'alkimi',
-        //         params: {
-        //             bidFloor: 100,
-        //             // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
-        //             token: '7d8aac74-ad7c-4015-9e03-b25beb7b257d', // localhost
-        //         }
-        //     }]
-        // };
+        var bannerAdUnit2 = {
+            code: 'div-gpt-ad-1460505748561-1',
+            mediaTypes: {
+                banner: {
+                    sizes: [[300, 250]],
+                }
+            },
+            bids: [{
+                bidder: 'alkimi',
+                params: {
+                    bidFloor: 100,
+                    // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
+                    token: '7d8aac74-ad7c-4015-9e03-b25beb7b257d', // localhost
+                }
+            }]
+        };
 
         var videoAdUnit = {
             code: 'vid1',
@@ -106,6 +109,14 @@
                     bidFloor: 1.6,
                     // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
                     token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
+                }
+            },
+            {
+                bidder: 'alkimi2',
+                params: {
+                    bidFloor: 1.6,
+                    // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
+                    token: '57ee3faf-334a-4b6e-8c40-29d9443780d6', // localhost
                 }
             }]
         };
@@ -130,6 +141,14 @@
                     bidFloor: 0.4,
                     // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
                     token: '972bfdaf-7f9a-4d85-a69d-38946f53b6f6', // localhost
+                }
+            },
+            {
+                bidder: 'alkimi2',
+                params: {
+                    bidFloor: 0.4,
+                    // token: 'a6b042a5-2d68-4110-a051-77fbaf002035', // dev
+                    token: '57ee3faf-334a-4b6e-8c40-29d9443780d6', // localhost
                 }
             }]
         };
@@ -174,8 +193,8 @@
         //         response.json().then(json => {
         pbjs.que.push(function () {
             pbjs.addAdUnits(bannerAdUnit1);
-            // pbjs.addAdUnits(bannerAdUnit2);
-            pbjs.addAdUnits(videoAdUnit);
+            pbjs.addAdUnits(bannerAdUnit2);
+            // pbjs.addAdUnits(videoAdUnit);
             // pbjs.addAdUnits(audioAdUnit);
 
             pbjs.bidderSettings = {
@@ -245,10 +264,10 @@
                             fields: ['mediaType', 'size']
                         },
                         values: {
-                            'banner|300x250': 1.4,
-                            'banner|300x251': 1.4,
-                            'video|*': 1.6,
-                            'audio|*': 1.6
+                            'banner|300x250': 1.12345,
+                            'banner|300x251': 1.12345,
+                            'video|*': 1.12345,
+                            'audio|*': 1.12345
                         }
                     }
                 },
@@ -272,7 +291,7 @@
                     at: 2,
                     source: {
                         ext: {
-                            fpa: false,
+                            fpa: true,
                         }
                     },
                     bcat: ["BSW1", "BSW2"],
