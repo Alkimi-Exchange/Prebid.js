@@ -16,7 +16,7 @@ const BIDDER = Object.freeze({
   SUPPORTED_MEDIA_TYPES: [BANNER, VIDEO],
 });
 
-const STORAGE = getStorageManager({bidderCode: BIDDER.CODE});
+const STORAGE = getStorageManager({ bidderCode: BIDDER.CODE });
 
 const CURRENCY = Object.freeze({
   KEY: 'currency',
@@ -172,6 +172,7 @@ function buildRequests(validBidRequests, bidderRequest) {
 
   const page = {}
   if (validPageId) {
+    // TODO: consider using the Prebid-generated page view ID instead of generating a custom one
     page.id = getLocalStorageSafely(CERBERUS.PAGE_VIEW_ID);
   }
   if (validPageTimestamp) {
@@ -198,7 +199,6 @@ function buildRequests(validBidRequests, bidderRequest) {
 
 function interpretResponse(response, bidRequest) {
   const bids = response.body;
-  const fledgeAuctionConfigs = [];
   const bidResponses = [];
 
   if (isEmpty(bids) || typeof bids !== 'object') {
@@ -240,23 +240,9 @@ function interpretResponse(response, bidRequest) {
     }
 
     bidResponses.push(bidResponse);
-
-    if (adUnit.auctionConfig) {
-      fledgeAuctionConfigs.push({
-        bidId: bidID,
-        config: adUnit.auctionConfig
-      })
-    }
   }
 
-  if (fledgeAuctionConfigs.length > 0) {
-    return {
-      bids: bidResponses,
-      paapi: fledgeAuctionConfigs
-    }
-  } else {
-    return bidResponses;
-  }
+  return bidResponses;
 }
 
 function getUserSyncs(syncOptions, _, gdprConsent, usPrivacy, gppConsent) {

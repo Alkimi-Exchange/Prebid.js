@@ -7,6 +7,7 @@ import { getBoundingClientRect } from '../libraries/boundingClientRect/boundingC
 import { ajax } from '../src/ajax.js';
 import { config as pbjsConfig } from '../src/config.js';
 import { isWebdriverEnabled } from '../libraries/webdriver/webdriver.js';
+import { getAdUnitElement } from '../src/utils/adUnits.js';
 
 /**
  * @typedef {import('../src/adapters/bidderFactory.js').Bid} Bid
@@ -20,6 +21,7 @@ import { isWebdriverEnabled } from '../libraries/webdriver/webdriver.js';
  * @typedef {import('../src/mediaTypes.js').MediaType} MediaType
  * @typedef {import('../src/utils.js').MediaTypes} MediaTypes
  * @typedef {import('../modules/priceFloors.js').getFloor} GetFloor
+ * @typedef {import('./yandexBidAdapterTypes.d.ts').YandexBidRequestParams} YandexBidRequestParams
  */
 
 /**
@@ -32,15 +34,6 @@ import { isWebdriverEnabled } from '../libraries/webdriver/webdriver.js';
  */
 
 /**
- * Yandex bidder-specific params which the publisher used in their bid request.
- *
- * @typedef {Object} YandexBidRequestParams
- * @property {string} placementId Possible formats: `R-I-123456-2`, `R-123456-1`, `123456-789`.
- * @property {number} [pageId] Deprecated. Please use `placementId` instead.
- * @property {number} [impId] Deprecated. Please use `placementId` instead.
- */
-
-/**
  * @typedef {Object} AdditionalBidRequestFields
  * @property {GetFloor} [getFloor]
  * @property {MediaTypes} [mediaTypes]
@@ -50,9 +43,11 @@ import { isWebdriverEnabled } from '../libraries/webdriver/webdriver.js';
  * @typedef {BidRequest & AdditionalBidRequestFields} ExtendedBidRequest
  */
 
+const BIDDER_DOMAIN = 'yandex.com';
+
 const BIDDER_CODE = 'yandex';
-const BIDDER_URL = 'https://yandex.ru/ads/prebid';
-const EVENT_TRACKER_URL = 'https://yandex.ru/ads/trace';
+const BIDDER_URL = '/ads/prebid';
+const EVENT_TRACKER_URL = '/ads/trace';
 // We send data in 1% of cases
 const DEFAULT_SAMPLING_RATE = 0.01;
 const EVENT_LOG_RANDOM_NUMBER = Math.random();
@@ -70,7 +65,7 @@ const ORTB_MTYPES = {
 };
 
 const SSP_ID = 10500;
-const ADAPTER_VERSION = '2.8.0';
+const ADAPTER_VERSION = '2.9.0';
 
 const TRACKER_METHODS = {
   img: 1,
@@ -164,11 +159,14 @@ export const spec = {
 
       const { pageId, impId } = extractPlacementIds(params);
 
+      const domain = getBidderDomain();
+
       const queryParams = {
         'imp-id': impId,
         'target-ref': targetRef || ortb2?.site?.domain,
         'adapter-version': ADAPTER_VERSION,
         'ssp-id': SSP_ID,
+        domain,
       };
 
       const gdprApplies = Boolean(deepAccess(bidderRequest, 'gdprConsent.gdprApplies'));
@@ -178,7 +176,7 @@ export const spec = {
         queryParams['tcf-consent'] = consentString;
       }
 
-      const adUnitElement = document.getElementById(bidRequest.params.pubcontainerid || bidRequest.adUnitCode);
+      const adUnitElement = bidRequest.params.pubcontainerid ? document.getElementById(bidRequest.params.pubcontainerid) : getAdUnitElement(bidRequest);
       const windowContext = getContext(adUnitElement);
       const isIframe = inIframe();
       const coords = isIframe ? getFramePosition() : {
@@ -247,7 +245,7 @@ export const spec = {
 
       const request = {
         method: 'POST',
-        url: BIDDER_URL + `/${pageId}?${queryParamsString}`,
+        url: `https://${domain}${BIDDER_URL}/${pageId}?${queryParamsString}`,
         data,
         options: {
           withCredentials,
@@ -287,10 +285,7 @@ export const spec = {
   },
   onBidderError: function({ error, bidderRequest }) {
     eventLog('PREBID_BIDDER_ERROR_EVENT', {
-      error: {
-        message: error?.reason?.message,
-        stack: error?.reason?.stack,
-      },
+      error,
       bidderRequest,
     });
   },
@@ -636,8 +631,15 @@ function eventLog(name, resp) {
       data: resp,
     };
 
-    ajax(EVENT_TRACKER_URL, undefined, JSON.stringify(data), { method: 'POST', withCredentials: true });
+    const domain = getBidderDomain();
+
+    ajax(`https://${domain}${EVENT_TRACKER_URL}`, undefined, JSON.stringify(data), { method: 'POST', withCredentials: true });
   }
+}
+
+function getBidderDomain() {
+  const bidderConfig = pbjsConfig.getConfig();
+  return bidderConfig?.yandex?.domain ?? BIDDER_DOMAIN;
 }
 
 /**

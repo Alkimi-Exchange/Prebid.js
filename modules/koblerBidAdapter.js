@@ -1,6 +1,5 @@
 import {
   deepAccess,
-  generateUUID,
   getWindowSelf,
   isArray,
   isStr,
@@ -8,14 +7,12 @@ import {
   replaceAuctionPrice,
   triggerPixel
 } from '../src/utils.js';
-import {registerBidder} from '../src/adapters/bidderFactory.js';
-import {BANNER} from '../src/mediaTypes.js';
-import {getRefererInfo} from '../src/refererDetection.js';
+import { registerBidder } from '../src/adapters/bidderFactory.js';
+import { BANNER } from '../src/mediaTypes.js';
+import { getRefererInfo } from '../src/refererDetection.js';
 import { getCurrencyFromBidderRequest } from '../libraries/ortb2Utils/currency.js';
 
 const additionalData = new WeakMap();
-
-export const pageViewId = generateUUID();
 
 export function setAdditionalData(obj, key, value) {
   const prevValue = additionalData.get(obj) || {};
@@ -185,7 +182,7 @@ function buildOpenRtbBidRequestPayload(validBidRequests, bidderRequest) {
       kobler: {
         tcf_purpose_2_given: purpose2Given,
         tcf_purpose_3_given: purpose3Given,
-        page_view_id: pageViewId
+        page_view_id: bidderRequest.pageViewId
       }
     }
   };
@@ -207,7 +204,12 @@ function buildOpenRtbImpObject(validBidRequest) {
     },
     bidfloor: floorInfo.floor,
     bidfloorcur: floorInfo.currency,
-    pmp: buildPmpObject(validBidRequest)
+    pmp: buildPmpObject(validBidRequest),
+    ext: {
+      prebid: {
+        adunitcode: validBidRequest.adUnitCode
+      }
+    }
   };
 }
 
